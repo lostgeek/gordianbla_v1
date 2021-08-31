@@ -66,13 +66,13 @@ def main():
         n = params[1]
         solution_id = uuid.uuid1()
 
-        print(f"Creating {card['title']} in {mode}: build/{solution_id}.svg...")
+        print(f"Creating {card['title']} in {mode}: puzzles/{solution_id}.svg...")
         started = datetime.now()
 
-        process = subprocess.Popen(f'go run ./lib/primitive/main.go -i {path} -o ./build/{solution_id}.svg -m {mode_nr} -n {n} -v', stdout=subprocess.PIPE, shell=True)
+        process = subprocess.Popen(f'go run ./lib/primitive/main.go -i {path} -o ./puzzles/{solution_id}.svg -m {mode_nr} -n {n} -v', stdout=subprocess.PIPE, shell=True)
         process.communicate()
 
-        with open(f'./build/{solution_id}.svg', 'r+') as f:
+        with open(f'./puzzles/{solution_id}.svg', 'r+') as f:
             lines = f.readlines()
             lines.insert(0, f'<!--\nTitle: {card["title"]}\nMode: {mode_nr} {mode}\nn: {n}\n-->\n')
             f.seek(0)
