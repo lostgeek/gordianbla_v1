@@ -1,0 +1,25 @@
+<html>
+<head>
+<title>Netrunner Decklist Printer</title>
+<meta charset="utf-8"/>
+<script src="./jquery-3.3.1.min.js"></script>
+<script src="./jquery-ui.min.js"></script>
+<link rel="stylesheet" href="./jquery-ui.min.css">
+<link rel="stylesheet" href="./jquery-ui.structure.min.css">
+<link rel="stylesheet" href="./jquery-ui.theme.min.css">
+<link rel="stylesheet" href="./printer.css">
+</head>
+<body>
+<div class='uielements hide-print'>
+    <input type="text" id="decklist" placeholder="Copy NetrunnerDB URL here" autocomplete="off" />
+    <input type="button" id="add_decklist" value="Add" />
+    <input type="button" id="clear_decklists" value="Clear" /><br />
+    Remember to set the orientation to landscape before printing!
+</div>
+<div class="decks">
+<div class="reference"></div>
+</div>
+<script src="./printer.js"></script>
+</body>
+</html>
+
