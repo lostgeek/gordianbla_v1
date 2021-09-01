@@ -1,4 +1,64 @@
 body {
-    font-size:16px;
-    font-family: 'LatoWeb', sans-serif;
+    font-size:1rem;
+    font-family: 'Roboto', sans-serif;
+    background: #29272e;
+    color: #cccccc;
+}
+
+body>* {
+    width:70%;
+    margin: 2rem 1rem;
+}
+
+a {
+    color: #b59ef0;
+    transition: color .4s;
+}
+
+a:hover {
+    color: #f09ebc;
+}
+
+.header {
+    margin-top: 1rem;
+    font-size: 2rem;
+    font-family: 'Patua One', cursive;
+
+}
+
+.footer {
+    margin-bottom: 1rem;
+}
+
+.sliderContainer {
+    margin: 0 auto;
+    margin-bottom: 1rem;
+    width: 30rem;
+}
+
+.slider {
+    width: 100%;
+}
+
+.imageContainer {
+    margin: 0 auto;
+    width: 30rem;
+}
+
+.titleContainer {
+    text-align:center;
+    margin-bottom:1rem;
+    font-size: 1.25rem;
+}
+
+.titleContainer button {
+    font-size: 1.25rem;
+}
+
+#cardtitle{
+    margin: 0 auto;
+}
+
+object {
+    display: block;
 }

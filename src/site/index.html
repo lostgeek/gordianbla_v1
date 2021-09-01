@@ -1,25 +1,37 @@
-<html>
-<head>
-<title>Netrunner Decklist Printer</title>
-<meta charset="utf-8"/>
-<script src="./jquery-3.3.1.min.js"></script>
-<script src="./jquery-ui.min.js"></script>
-<link rel="stylesheet" href="./jquery-ui.min.css">
-<link rel="stylesheet" href="./jquery-ui.structure.min.css">
-<link rel="stylesheet" href="./jquery-ui.theme.min.css">
-<link rel="stylesheet" href="./printer.css">
-</head>
-<body>
-<div class='uielements hide-print'>
-    <input type="text" id="decklist" placeholder="Copy NetrunnerDB URL here" autocomplete="off" />
-    <input type="button" id="add_decklist" value="Add" />
-    <input type="button" id="clear_decklists" value="Clear" /><br />
-    Remember to set the orientation to landscape before printing!
-</div>
-<div class="decks">
-<div class="reference"></div>
-</div>
-<script src="./printer.js"></script>
-</body>
+<!doctype html>
+<html ng-app="gordianbla">
+    <head>
+        <title>Gordian Blade</title>
+        <meta charset="utf-8"/>
+        <script src="angular.min.js"></script>
+        <link rel="stylesheet" href="style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto&display=swap" rel="stylesheet">
+        <script src="gordianblade.js"></script>
+    </head>
+    <body>
+        <div class='header'>
+            Welcome to Gordian Blade!
+        </div>
+        <div class="content">
+            <div class="puzzleContainer" ng-controller="PuzzleController">
+                <div class="titleContainer">
+                    <div id="cardTitle" ng-show="showTitle">{{ title }}</div>
+                    <button ng-click="revealTitle()" ng-show="showButton">Reveal title</button>
+                </div>
+
+                <div class="sliderContainer">
+                    <input type="range" class="slider" id="elementSlider" ng-model="elements" min="{{minElements}}" max="{{maxElements}}" ng-change="updateImage()">
+                </div>
+
+                <div class='imageContainer' ng-bind-html="svgImage">
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            Renderings created using <a href="https://github.com/fogleman/primitive">primitive</a> by @fogleman (MIT License).
+        </div>
+    </body>
 </html>
 
