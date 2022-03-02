@@ -18,7 +18,6 @@ PARAMETERS = {
         'combo': [0, 300],
         'triangle': [1, 450],
         'rect': [2, 600],
-        'rectangle': [2, 600],
         'ellipse': [3, 600],
         'circle': [4, 1200],
         'rotatedrect': [5, 600],
