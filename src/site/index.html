@@ -12,20 +12,44 @@
     </head>
     <body>
         <div class='header'>
-            Welcome to Gordian Blade!
+            Gordian Blade
         </div>
         <div class="content">
             <div class="puzzleContainer" ng-controller="PuzzleController">
-                <div class="titleContainer">
-                    <div id="cardTitle" ng-show="showTitle">{{ title }}</div>
-                    <button ng-click="revealTitle()" ng-show="showButton">Reveal title</button>
+                <div class='guessesDisplay'>
+                    <div class="guess" ng-class="{incorrect: guesses[0].state=='incorrect', correct: guesses[0].state=='correct', notguessed: guesses[0].state=='not-guessed'}">
+                        <div class="face front"></div>
+                        <div class="face back"></div>
+                    </div>
+                    <div class="guess" ng-class="{incorrect: guesses[1].state=='incorrect', correct: guesses[1].state=='correct', notguessed: guesses[1].state=='not-guessed'}">
+                        <div class="face front"></div>
+                        <div class="face back"></div>
+                    </div>
+                    <div class="guess" ng-class="{incorrect: guesses[2].state=='incorrect', correct: guesses[2].state=='correct', notguessed: guesses[2].state=='not-guessed'}">
+                        <div class="face front"></div>
+                        <div class="face back"></div>
+                    </div>
+                    <div class="guess" ng-class="{incorrect: guesses[3].state=='incorrect', correct: guesses[3].state=='correct', notguessed: guesses[3].state=='not-guessed'}">
+                        <div class="face front"></div>
+                        <div class="face back"></div>
+                    </div>
+                    <div class="guess" ng-class="{incorrect: guesses[4].state=='incorrect', correct: guesses[4].state=='correct', notguessed: guesses[4].state=='not-guessed'}">
+                        <div class="face front"></div>
+                        <div class="face back"></div>
+                    </div>
+                    <div class="guess" ng-class="{incorrect: guesses[5].state=='incorrect', correct: guesses[5].state=='correct', notguessed: guesses[5].state=='not-guessed'}">
+                        <div class="face front"></div>
+                        <div class="face back"></div>
+                    </div>
                 </div>
 
-                <div class="sliderContainer">
-                    <input type="range" class="slider" id="elementSlider" ng-model="elements" min="{{minElements}}" max="{{maxElements}}" ng-change="updateImage()">
-                </div>
+                <button ng-click="revealGuess()">Animate</button>
 
                 <div class='imageContainer' ng-bind-html="svgImage">
+                </div>
+
+                <div class='guessContainer'>
+                    <input type='text' size='40' ng-bind='guessInput' />
                 </div>
             </div>
         </div>

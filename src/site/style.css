@@ -6,8 +6,8 @@ body {
 }
 
 body>* {
-    width:70%;
-    margin: 2rem 1rem;
+    width:90%;
+    margin: 2rem auto;
 }
 
 a {
@@ -24,20 +24,69 @@ a:hover {
     font-size: 2rem;
     font-family: 'Patua One', cursive;
 
+    text-align: center;
+
+    border-bottom: 1px solid #ccc;
 }
 
 .footer {
     margin-bottom: 1rem;
 }
 
-.sliderContainer {
-    margin: 0 auto;
-    margin-bottom: 1rem;
-    width: 30rem;
+.guessesDisplay {
+    display: flex;
+    margin: 1rem auto;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
-.slider {
-    width: 100%;
+.guess {
+    width: 3rem;
+    height: 3rem;
+    border: 2px solid #ccc;
+    perspective: 1000px;
+    -webkit-transition: all 1s linear !important;
+    -moz-transition: all 1s linear !important;
+    -o-transition: all 1s linear !important;
+    transition: all 1s linear !important;
+    transform-style: preserve-3d;
+}
+
+.guess:not(.notguessed) {
+    transform: rotateY(180deg);
+}
+
+.guess .front, .guess .back {
+    backface-visibility: hidden;
+    position:absolute;
+    width:100%;
+    height:100%;
+}
+
+.guess .front {
+    z-index:2;
+}
+
+.guess .back {
+    transform: rotateY(180deg);
+    z-index:1;
+}
+
+
+.guess .front {
+    background:#29272e;
+}
+
+.guess .back {
+    background:#29272e;
+}
+
+.guess.incorrect .back {
+    background:#4a0000;
+}
+
+.guess.correct .back {
+    background:#074a00;
 }
 
 .imageContainer {

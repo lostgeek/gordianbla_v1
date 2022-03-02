@@ -58,4 +58,19 @@ angular.module('gordianbla', [])
             $scope.showButton = false;
         };
 
+        $scope.guesses = [{'state': 'not-guessed'},
+            {'state': 'not-guessed'},
+            {'state': 'not-guessed'},
+            {'state': 'not-guessed'},
+            {'state': 'not-guessed'},
+            {'state': 'not-guessed'}];
+
+        $scope.currGuess = 0;
+        $scope.revealGuess = function() {
+            $scope.guesses[$scope.currGuess] = {'state': 'incorrect'};
+            $scope.currGuess++;
+        }
+
+
+
     }]);
