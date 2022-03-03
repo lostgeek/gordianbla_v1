@@ -29,10 +29,6 @@ a:hover {
     border-bottom: 1px solid #ccc;
 }
 
-.footer {
-    margin-bottom: 1rem;
-}
-
 .guessesDisplay {
     display: flex;
     margin: 1rem auto;
@@ -89,9 +85,33 @@ a:hover {
     background:#074a00;
 }
 
+.guessContainer {
+    text-align:center;
+    margin: 1rem auto;
+    position: absolute;
+    bottom: 0;
+    background: #29272e;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.guessContainer input {
+    font-size: 1.5rem;
+}
+
+.guessContainer .selected {
+    text-shadow: 0 0 1rem #34eaed;
+}
+
 .imageContainer {
     margin: 0 auto;
-    width: 30rem;
+    text-align: center;
+}
+
+.imageContainer svg {
+    margin: 0 auto;
+    width: auto;
+    height: 70vh;
 }
 
 .titleContainer {

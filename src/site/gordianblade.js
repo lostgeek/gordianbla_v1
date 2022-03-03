@@ -1,5 +1,8 @@
-angular.module('gordianbla', [])
-    .controller('PuzzleController', ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+angular.module('gordianbla', ['angular.filter'])
+    .controller('PuzzleController', ['$scope', '$http', '$sce', 'fuzzyByFilter', function($scope, $http, $sce, fuzzyByFilter) {
+        var allCards = [];
+        $scope.selectionFuzzy = -1;
+
         $scope.showTitle = false;
         $scope.showButton = true;
 
@@ -66,11 +69,54 @@ angular.module('gordianbla', [])
             {'state': 'not-guessed'}];
 
         $scope.currGuess = 0;
-        $scope.revealGuess = function() {
-            $scope.guesses[$scope.currGuess] = {'state': 'incorrect'};
+        $scope.guess = function(card) {
+            if(card.title == $scope.title) {
+                $scope.guesses[$scope.currGuess] = {'state': 'correct'};
+            } else {
+                $scope.guesses[$scope.currGuess] = {'state': 'incorrect'};
+                $scope.elements *= 2;
+                $scope.updateImage();
+            }
             $scope.currGuess++;
         }
 
+        $sce.trustAsResourceUrl('https://netrunnerdb.com/api/**');
+        $http({
+            method: 'GET',
+            cache: true,
+            url: 'https://netrunnerdb.com/api/2.0/public/cards'
+        }).then(function successCallback(response) {
+            allCards = response.data.data;
+            //ToDo: Filter to be unique
+        }, function errorCallback(response) {
+            console.log("Error: Fetching NRDB cards failed.");
+        });
 
+        $scope.updateFuzzy = function() {
+            $scope.possibleCards = fuzzyByFilter(allCards, "title", $scope.guessInput);
+        };
+
+        $scope.keydownFuzzy = function(e) {
+            // console.log(e.keyCode);
+            if(e.keyCode == 13) { // ENTER
+                $scope.guess($scope.possibleCards[0]);
+                $scope.guessInput = "";
+                $scope.updateFuzzy();
+            } else if(e.keyCode == 40) { // DOWN
+                if($scope.selectionFuzzy < $scope.possibleCards.length-1) {
+                    $scope.selectionFuzzy++;
+                }
+                $scope.guessInput = $scope.possibleCards[$scope.selectionFuzzy].title;
+            } else if(e.keyCode == 38) { // UP
+                if($scope.selectionFuzzy > 0) {
+                    $scope.selectionFuzzy--;
+                } else if ($scope.selectionFuzzy < 0) {
+                    $scope.selectionFuzzy = 0;
+                }
+                $scope.guessInput = $scope.possibleCards[$scope.selectionFuzzy].title;
+            } else {
+                $scope.selectionFuzzy = -1;
+            }
+        }
 
     }]);
