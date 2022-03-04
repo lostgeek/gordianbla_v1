@@ -38,20 +38,47 @@ a:hover {
 .puzzleContainer {
     display: flex;
     margin-top: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem 0rem;
+    flex-direction:row-reverse;
 }
 
 /* GuessesDisplay {{{ */
 
+.guessesOuter {
+    flex-grow: 3;
+}
+
 .guessesDisplay {
-    display: flex;
-    margin: 1rem auto;
+    display:flex;
     justify-content: center;
-    gap: 0.5rem;
+    margin: 2rem auto;
+    flex-grow: 1;
+    padding: 0 2rem;
+}
+
+.guessColumn {
+    margin: 0 auto;
+    flex-grow: 0;
+}
+
+.guessColumn.title {
+    flex-grow: 1;
+    min-width: 10rem;
+}
+
+.guessColumn .guessHeader {
+    font-family: 'Patua One', cursive;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-right: 1rem;
+    white-space: nowrap;
 }
 
 .guess {
-    width: 3rem;
-    height: 3rem;
+    width: 4rem;
+    height: 4rem;
     border: 2px solid #ccc;
     perspective: 1000px;
     -webkit-transition: all 1s linear !important;
@@ -59,10 +86,21 @@ a:hover {
     -o-transition: all 1s linear !important;
     transition: all 1s linear !important;
     transform-style: preserve-3d;
+    margin-top: 1rem;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.guess.title {
+    width: 100%;
+}
+
+.guess.cost {
+    font-size: 3rem!important;
 }
 
 .guess:not(.notguessed) {
-    transform: rotateY(180deg);
+    transform: rotateX(180deg);
 }
 
 .guess .front, .guess .back {
@@ -70,6 +108,15 @@ a:hover {
     position:absolute;
     width:100%;
     height:100%;
+
+    font-family: 'Medula One', sans-serif;
+    font-size: 2rem;
+    margin: auto;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .guess .front {
@@ -77,7 +124,7 @@ a:hover {
 }
 
 .guess .back {
-    transform: rotateY(180deg);
+    transform: rotateX(180deg);
     z-index:1;
 }
 
@@ -91,28 +138,76 @@ a:hover {
 }
 
 .guess.incorrect .back {
-    background:#4a0000;
+    background:#780000;
 }
 
 .guess.correct .back {
-    background:#074a00;
+    background:#247800;
 }
+
+.guess.partial-0-1 .back, .guess.partial-0-2 .back, .guess.partial-0-3 .back, .guess.partial-0-4 .back, .guess.partial-0-5 .back {
+    background:#780000;
+}
+
+.guess.partial-1-1 .back, .guess.partial-2-2 .back, .guess.partial-3-3 .back, .guess.partial-4-4 .back, .guess.partial-5-5 .back {
+    background:#247800;
+}
+
+.guess.partial-1-2 .back, .guess.partial-2-4 .back {
+    background-image: conic-gradient(#247800 50%, #780000 50%);
+}
+
+.guess.partial-1-3 .back {
+    background-image: conic-gradient(#247800 33%, #780000 67%);
+}
+
+.guess.partial-2-3 .back {
+    background-image: conic-gradient(#247800 66%, #780000 34%);
+}
+
+.guess.partial-1-4 .back {
+    background-image: conic-gradient(#247800 25%, #780000 75%);
+}
+
+.guess.partial-3-4 .back {
+    background-image: conic-gradient(#247800 75%, #780000 25%);
+}
+
+.guess.partial-1-5 .back {
+    background-image: conic-gradient(#247800 20%, #780000 80%);
+}
+
+.guess.partial-2-5 .back {
+    background-image: conic-gradient(#247800 40%, #780000 60%);
+}
+
+.guess.partial-3-5 .back {
+    background-image: conic-gradient(#247800 60%, #780000 40%);
+}
+
+.guess.partial-4-5 .back {
+    background-image: conic-gradient(#247800 80%, #780000 20%);
+}
+
 /* }}} */
 
 /* guessContainer {{{ */
 .guessContainer {
     text-align:center;
     margin: 1rem auto;
-    position: absolute;
-    bottom: 0;
     background: #29272e;
-    left: 50%;
-    transform: translateX(-50%);
 }
 
 .guessContainer input {
     font-size: 1.5rem;
     font-family: 'Roboto', sans-serif;
+}
+
+.guessContainer .suggestions {
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 9rem;
 }
 
 .guessContainer .suggestions .suggestion {
@@ -128,7 +223,7 @@ a:hover {
 
 /* ImageContainer {{{ */
 .imageContainer {
-    margin: 0 auto;
+    flex-grow: 1;
     text-align: center;
 }
 

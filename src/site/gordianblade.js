@@ -1,5 +1,5 @@
 angular.module('gordianbla', ['angular.filter'])
-    .controller('PuzzleController', ['$scope', '$http', '$sce', 'fuzzyByFilter', function($scope, $http, $sce, fuzzyByFilter) {
+    .controller('PuzzleController', ['$scope', '$http', '$sce', 'fuzzyByFilter', '$interval', function($scope, $http, $sce, fuzzyByFilter, $interval) {
         // Views {{{
         $scope.showCongrats = false;
 
@@ -73,13 +73,57 @@ angular.module('gordianbla', ['angular.filter'])
 
         $scope.currGuess = 0;
         $scope.guess = function(card) {
-            if(card.title == $scope.title) {
-                $scope.guesses[$scope.currGuess] = {'state': 'correct'};
+            correctCard = $scope.allCards.filter(function(c){return c.title == $scope.title;})[0];
+            newGuess = {'guessedTitle': card.title};
+            if(card.title == correctCard.title) {
+                newGuess.state = 'correct';
+                newGuess.title = 'correct';
+                $scope.selection_int = $interval( function() {$scope.showCongrats = true;}, 1200);
             } else {
-                $scope.guesses[$scope.currGuess] = {'state': 'incorrect'};
+                newGuess.state = 'incorrect';
+                newGuess.title = 'incorrect';
+
                 $scope.elements *= 2;
                 $scope.updateImage();
             }
+
+            if(correctCard.keywords)
+                correctTypes = correctCard.keywords.split(' - ');
+            else
+                correctTypes = [];
+
+            if(card.keywords)
+                cardTypes = card.keywords.split(' - ');
+            else
+                cardTypes = [];
+
+            hits = cardTypes.filter(value => correctTypes.includes(value));
+
+            newGuess.subtypeHits = hits.length;
+            newGuess.subtypeTotal = correctTypes.length;
+
+            if(card.cost)
+                newGuess.guessedCost = card.cost;
+            else if(card.advancement_cost)
+                newGuess.guessedCost = card.advancement_cost;
+            else
+                newGuess.guessedCost = null;
+
+            correctCost = -1;
+            if(card.cost)
+                correctCost = correctCard.cost;
+            else if(card.advancement_cost)
+                correctCost = correctCard.advancement_cost;
+            else
+                correctCost = null;
+
+            newGuess.costCorrect = (newGuess.guessedCost == correctCost);
+
+            newGuess.factionCorrect = (card.faction_code == correctCard.faction_code);
+
+            console.log(card, correctCard);
+
+            $scope.guesses[$scope.currGuess] = newGuess;
             $scope.currGuess++;
         }
         // }}}
@@ -93,7 +137,7 @@ angular.module('gordianbla', ['angular.filter'])
             url: 'https://netrunnerdb.com/api/2.0/public/cards'
         }).then(function successCallback(response) {
             $scope.allCards = response.data.data;
-            //ToDo: Filter to be unique
+            $scope.allCards = makeUniqueByKey($scope.allCards, 'title');
         }, function errorCallback(response) {
             console.log("Error: Fetching NRDB cards failed.");
         });
@@ -102,33 +146,42 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.selectionFuzzy = -1;
 
         $scope.updateFuzzy = function() {
-            $scope.possibleCards = fuzzyByFilter($scope.allCards, "title", $scope.guessInput);
+            $scope.possibleCards = fuzzyByFilter($scope.allCards, "title", $scope.guessInput);//.concat(fuzzyByFilter($scope.allCards, "stripped_title", $scope.guessInput));
         };
 
         $scope.enterGuess = function() {
-            $scope.guess($scope.possibleCards[0]);
-            $scope.guessInput = "";
-            $scope.updateFuzzy();
-        }
+            if($scope.guessInput) {
+                $scope.updateFuzzy();
+                if($scope.guessInput == $scope.possibleCards[0].title) {
+                    $scope.guess($scope.possibleCards[0]);
+                    $scope.guessInput = "";
+                    $scope.updateFuzzy();
+                } else {
+                    $scope.guessInput = $scope.possibleCards[0].title;
+                }
+            }
+        };
 
         $scope.keydownFuzzy = function(e) {
             // console.log(e.keyCode);
-            if(e.keyCode == 13) { // ENTER
-                $scope.enterGuess();
-            } else if(e.keyCode == 40) { // DOWN
-                if($scope.selectionFuzzy < $scope.possibleCards.length-1) {
-                    $scope.selectionFuzzy++;
+            if($scope.possibleCards && $scope.possibleCards.length > 0 && $scope.guessInput) {
+                if(e.keyCode == 13) { // ENTER
+                    $scope.enterGuess();
+                } else if(e.keyCode == 40) { // DOWN
+                    if($scope.selectionFuzzy < $scope.possibleCards.length-1) {
+                        $scope.selectionFuzzy++;
+                    }
+                    $scope.guessInput = $scope.possibleCards[$scope.selectionFuzzy].title;
+                } else if(e.keyCode == 38) { // UP
+                    if($scope.selectionFuzzy > 0) {
+                        $scope.selectionFuzzy--;
+                    } else if ($scope.selectionFuzzy < 0) {
+                        $scope.selectionFuzzy = 0;
+                    }
+                    $scope.guessInput = $scope.possibleCards[$scope.selectionFuzzy].title;
+                } else {
+                    $scope.selectionFuzzy = -1;
                 }
-                $scope.guessInput = $scope.possibleCards[$scope.selectionFuzzy].title;
-            } else if(e.keyCode == 38) { // UP
-                if($scope.selectionFuzzy > 0) {
-                    $scope.selectionFuzzy--;
-                } else if ($scope.selectionFuzzy < 0) {
-                    $scope.selectionFuzzy = 0;
-                }
-                $scope.guessInput = $scope.possibleCards[$scope.selectionFuzzy].title;
-            } else {
-                $scope.selectionFuzzy = -1;
             }
         }
 
@@ -139,3 +192,16 @@ angular.module('gordianbla', ['angular.filter'])
         }
         // }}}
     }]);
+
+function makeUniqueByKey(list, key) {
+    keys = {};
+    for(e of list) {
+        if(!(e[key] in keys)) {
+            keys[e[key]] = e;
+        }
+    }
+    return Object.values(keys);
+}
+
+
+

@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto&family=Medula+One&display=swap" rel="stylesheet">
         <script src="angular-filter.min.js"></script>
         <script src="gordianblade.js"></script>
     </head>
@@ -21,21 +21,54 @@
         </div>
         <div class="content">
             <div class="puzzleContainer" ng-show="currentView=='puzzle'">
-                <div class='guessesDisplay'>
-                    <div class="guess" ng-repeat="n in [0,1,2,3,4,5]" ng-class="{incorrect: guesses[n].state=='incorrect', correct: guesses[n].state=='correct', notguessed: guesses[n].state=='not-guessed'}">
-                        <div class="face front"></div>
-                        <div class="face back"></div>
-                    </div>
-                </div>
-
                 <div class='imageContainer' ng-show="allCards.length>0" ng-bind-html="svgImage"></div>
                 <div ng-hide="allCards.length>0">Loading cards from NRDB...</div>
-            </div>
-            <div class='guessContainer' ng-show="currentView=='puzzle'">
-                <div class="suggestions">
-                    <div class="suggestion" ng-show="guessInput" ng-repeat="card in possibleCards | limitTo:3" ng-class="{selected: $index==selectionFuzzy}" ng-click="selectFuzzy($index)">{{card.title}}</div>
+                <div class='guessesOuter'>
+                    <div class="guessesDisplay">
+                        <div class="guessColumn faction">
+                            <div class="guessHeader">
+                                Faction
+                            </div>
+                            <div class="guess faction" ng-repeat="n in [0,1,2,3,4,5]" ng-class="{incorrect: !guesses[n].factionCorrect, correct: guesses[n].factionCorrect, notguessed: guesses[n].state=='not-guessed'}">
+                                <div class="face front"></div>
+                                <div class="face back"></div>
+                            </div>
+                        </div>
+                        <div class="guessColumn">
+                            <div class="guessHeader">
+                                Subtypes
+                            </div>
+                            <div class="guess partial-{{guesses[n].subtypeHits}}-{{guesses[n].subtypeTotal}}" ng-repeat="n in [0,1,2,3,4,5]" ng-class="{notguessed: guesses[n].state=='not-guessed'}">
+                                <div class="face front"></div>
+                                <div class="face back"></div>
+                            </div>
+                        </div>
+                        <div class="guessColumn cost">
+                            <div class="guessHeader">
+                                (Adv.) Cost
+                            </div>
+                            <div class="guess cost" ng-repeat="n in [0,1,2,3,4,5]" ng-class="{incorrect: !guesses[n].costCorrect, correct: guesses[n].costCorrect, notguessed: guesses[n].state=='not-guessed'}">
+                                <div class="face front"></div>
+                                <div class="face back"></div>
+                            </div>
+                        </div>
+                        <div class="guessColumn title">
+                            <div class="guessHeader">
+                                Card Title
+                            </div>
+                            <div class="guess title" ng-repeat="n in [0,1,2,3,4,5]" ng-class="{incorrect: guesses[n].state=='incorrect', correct: guesses[n].state=='correct', notguessed: guesses[n].state=='not-guessed'}">
+                                <div class="face front"></div>
+                                <div class="face back">{{guesses[n].guessedTitle}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='guessContainer' ng-show="currentView=='puzzle'">
+                        <div class="suggestions">
+                            <div class="suggestion" ng-show="guessInput" ng-repeat="card in possibleCards | limitTo:3" ng-class="{selected: $index==selectionFuzzy}" ng-click="selectFuzzy($index)">{{card.title}}</div>
+                        </div>
+                        <input type='text' size='40' placeholder="Enter card name here!" ng-model='guessInput' ng-change="updateFuzzy()" ng-keydown="keydownFuzzy($event)" autofocus />
+                    </div>
                 </div>
-                <input type='text' size='40' placeholder="Enter card name here!" ng-model='guessInput' ng-change="updateFuzzy()" ng-keydown="keydownFuzzy($event)" autofocus />
             </div>
             <div class="stats" ng-show="currentView=='stats'">
                 STATS
