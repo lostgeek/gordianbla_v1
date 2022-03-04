@@ -11,12 +11,16 @@
         <script src="angular-filter.min.js"></script>
         <script src="gordianblade.js"></script>
     </head>
-    <body>
+    <body ng-controller="PuzzleController">
         <div class='header'>
             Gordian Blade
+            <div class='buttons right'>
+                <img class='button' src="img/outline/outline-basketball.svg" ng-click="showCongrats=true" />
+                <img class='button' src="img/outline/outline-settings.svg" ng-click="settingsButton()" />
+            </div>
         </div>
         <div class="content">
-            <div class="puzzleContainer" ng-controller="PuzzleController">
+            <div class="puzzleContainer" ng-show="currentView=='puzzle'">
                 <div class='guessesDisplay'>
                     <div class="guess" ng-repeat="n in [0,1,2,3,4,5]" ng-class="{incorrect: guesses[n].state=='incorrect', correct: guesses[n].state=='correct', notguessed: guesses[n].state=='not-guessed'}">
                         <div class="face front"></div>
@@ -24,14 +28,23 @@
                     </div>
                 </div>
 
-                <div class='imageContainer' ng-bind-html="svgImage"></div>
-
-                <div class='guessContainer'>
-                    <div class="suggestions">
-                        <div ng-show="guessInput" ng-repeat="card in possibleCards | limitTo:7" ng-class="{selected: $index==selectionFuzzy}">{{card.title}}</div>
-                    </div>
-                    <input type='text' size='40' placeholder="Enter card name here!" ng-model='guessInput' ng-change="updateFuzzy()" ng-keydown="keydownFuzzy($event)" autofocus />
+                <div class='imageContainer' ng-show="allCards.length>0" ng-bind-html="svgImage"></div>
+                <div ng-hide="allCards.length>0">Loading cards from NRDB...</div>
+            </div>
+            <div class='guessContainer' ng-show="currentView=='puzzle'">
+                <div class="suggestions">
+                    <div class="suggestion" ng-show="guessInput" ng-repeat="card in possibleCards | limitTo:3" ng-class="{selected: $index==selectionFuzzy}" ng-click="selectFuzzy($index)">{{card.title}}</div>
                 </div>
+                <input type='text' size='40' placeholder="Enter card name here!" ng-model='guessInput' ng-change="updateFuzzy()" ng-keydown="keydownFuzzy($event)" autofocus />
+            </div>
+            <div class="stats" ng-show="currentView=='stats'">
+                STATS
+            </div>
+            <div class="congrats" ng-show="showCongrats">
+                CONGRATS
+            </div>
+            <div class="settings" ng-show="currentView=='settings'">
+                SETTINGS
             </div>
         </div>
     </body>

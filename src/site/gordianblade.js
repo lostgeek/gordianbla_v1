@@ -1,11 +1,18 @@
 angular.module('gordianbla', ['angular.filter'])
     .controller('PuzzleController', ['$scope', '$http', '$sce', 'fuzzyByFilter', function($scope, $http, $sce, fuzzyByFilter) {
-        var allCards = [];
-        $scope.selectionFuzzy = -1;
+        // Views {{{
+        $scope.showCongrats = false;
 
-        $scope.showTitle = false;
-        $scope.showButton = true;
-
+        $scope.currentView = 'puzzle';
+        $scope.settingsButton = function() {
+            if($scope.currentView == 'settings') {
+                $scope.currentView = 'puzzle';
+            } else {
+                $scope.currentView = 'settings';
+            }
+        }
+        // }}}
+        // SVG Puzzle {{{
         $scope.elements = 10;
         $scope.minElements = 0;
         $scope.maxElements = 200;
@@ -55,12 +62,8 @@ angular.module('gordianbla', ['angular.filter'])
         }, function errorCallback(response) {
             console.log("Error: Fetching failed.");
         });
-
-        $scope.revealTitle = function() {
-            $scope.showTitle = true;
-            $scope.showButton = false;
-        };
-
+        //}}}
+        // Guesses Display {{{
         $scope.guesses = [{'state': 'not-guessed'},
             {'state': 'not-guessed'},
             {'state': 'not-guessed'},
@@ -79,6 +82,9 @@ angular.module('gordianbla', ['angular.filter'])
             }
             $scope.currGuess++;
         }
+        // }}}
+        // NRDB get cards {{{
+        $scope.allCards = [];
 
         $sce.trustAsResourceUrl('https://netrunnerdb.com/api/**');
         $http({
@@ -86,22 +92,29 @@ angular.module('gordianbla', ['angular.filter'])
             cache: true,
             url: 'https://netrunnerdb.com/api/2.0/public/cards'
         }).then(function successCallback(response) {
-            allCards = response.data.data;
+            $scope.allCards = response.data.data;
             //ToDo: Filter to be unique
         }, function errorCallback(response) {
             console.log("Error: Fetching NRDB cards failed.");
         });
+        // }}}
+        // Fuzzy guesses {{{
+        $scope.selectionFuzzy = -1;
 
         $scope.updateFuzzy = function() {
-            $scope.possibleCards = fuzzyByFilter(allCards, "title", $scope.guessInput);
+            $scope.possibleCards = fuzzyByFilter($scope.allCards, "title", $scope.guessInput);
         };
+
+        $scope.enterGuess = function() {
+            $scope.guess($scope.possibleCards[0]);
+            $scope.guessInput = "";
+            $scope.updateFuzzy();
+        }
 
         $scope.keydownFuzzy = function(e) {
             // console.log(e.keyCode);
             if(e.keyCode == 13) { // ENTER
-                $scope.guess($scope.possibleCards[0]);
-                $scope.guessInput = "";
-                $scope.updateFuzzy();
+                $scope.enterGuess();
             } else if(e.keyCode == 40) { // DOWN
                 if($scope.selectionFuzzy < $scope.possibleCards.length-1) {
                     $scope.selectionFuzzy++;
@@ -119,4 +132,10 @@ angular.module('gordianbla', ['angular.filter'])
             }
         }
 
+        $scope.selectFuzzy = function(i) {
+            $scope.selectionFuzzy = i;
+            $scope.updateFuzzy();
+            $scope.enterGuess();
+        }
+        // }}}
     }]);
