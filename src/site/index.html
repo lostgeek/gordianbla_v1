@@ -63,8 +63,8 @@
                         </div>
                     </div>
                     <div class='guessContainer' ng-show="currentView=='puzzle'">
-                        <div class="suggestions">
-                            <div class="suggestion" ng-show="guessInput" ng-repeat="card in possibleCards | limitTo:3" ng-class="{selected: $index==selectionFuzzy}" ng-click="selectFuzzy($index)">{{card.title}}</div>
+                        <div class="suggestions" id="suggestions">
+                            <div class="suggestion" ng-show="guessInput" ng-repeat="card in possibleCards" ng-class="{selected: $index==selectionFuzzy}" ng-click="selectFuzzy($index)">{{card.title}}</div>
                         </div>
                         <input type='text' size='40' placeholder="Enter card name here!" ng-model='guessInput' ng-change="updateFuzzy()" ng-keydown="keydownFuzzy($event)" autofocus />
                     </div>

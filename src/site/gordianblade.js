@@ -146,6 +146,7 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.selectionFuzzy = -1;
 
         $scope.updateFuzzy = function() {
+            // ToDo: DO THIS
             $scope.possibleCards = fuzzyByFilter($scope.allCards, "title", $scope.guessInput);//.concat(fuzzyByFilter($scope.allCards, "stripped_title", $scope.guessInput));
         };
 
@@ -182,6 +183,9 @@ angular.module('gordianbla', ['angular.filter'])
                 } else {
                     $scope.selectionFuzzy = -1;
                 }
+                sug = document.getElementById("suggestions");
+                sug.scrollTop = $scope.selectionFuzzy * sug.scrollHeight/$scope.possibleCards.length;
+
             }
         }
 
