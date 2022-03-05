@@ -353,66 +353,71 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.copyShare = function() {
             today = new Date();
             text = "gordianbla.de - "+today.toDateString()+"\n";
-            text += "Guesses: "+$scope.currGuess+"/6\n";
+            text += "Guesses: "+$scope.currGuess+"/6";
+            if($scope.hardMode)
+                text += "*";
+            text += "\n";
+
             for(g of $scope.guesses) {
                 if(g.state != 'not-guessed') {
                     if(g.factionCorrect) {
-                        text += "🟩"
+                        text += "🟩";
                     } else {
                         if($scope.lightMode)
-                            text += "⬜"
+                            text += "⬜";
                         else
-                            text += "⬛"
+                            text += "⬛";
                     }
 
                     if(g.typeCorrect) {
-                        text += "🟩"
+                        text += "🟩";
                     } else {
                         if($scope.lightMode)
-                            text += "⬜"
+                            text += "⬜";
                         else
-                            text += "⬛"
+                            text += "⬛";
                     }
 
                     if(g.subtypeTotal == 0) {
                         if(g.state == 'correct') {
-                            text += "🟩"
+                            text += "🟩";
                         } else {
                             if($scope.lightMode)
-                                text += "⬜"
+                                text += "⬜";
                             else
-                                text += "⬛"
+                                text += "⬛";
                         }
                     } else {
-                        if(g.subtypeHits == 0)
-                            text += "0️⃣"
-                        else if(g.subtypeHits == 1)
-                            text += "1️⃣"
-                        else if(g.subtypeHits == 2)
-                            text += "2️⃣"
-                        else if(g.subtypeHits == 3)
-                            text += "3️⃣"
-                        else if(g.subtypeHits == 4)
-                            text += "4️⃣"
-                        else if(g.subtypeHits == 5)
-                            text += "5️⃣"
+                        if(g.subtypeHits == g.subtypeTotal) {
+                            text += "🟩";
+                        } else {
+                            if($scope.lightMode)
+                                text += "⬜";
+                            else
+                                text += "⬛";
+                        }
+                    }
+                    if(g.costCorrect) {
+                        text += "🟩";
+                    } else {
+                        if($scope.lightMode)
+                            text += "⬜";
                         else
-                            text += "🚫"
+                            text += "⬛";
                     }
 
                     if(g.state == 'correct') {
-                        text += "🟩"
+                        text += "🟩";
                     } else {
                         if($scope.lightMode)
-                            text += "⬜"
+                            text += "⬜";
                         else
-                            text += "⬛"
+                            text += "⬛";
                     }
-
                     text += "\n";
                 }
             }
-            navigator.clipboard.writeText(text);
+            navigator.clipboard.writeText(text.trim());
             $scope.showToast("Text copied to clipboard.");
         }
         // }}}
