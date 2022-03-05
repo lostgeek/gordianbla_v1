@@ -34,7 +34,16 @@
                                 <div class="face back"></div>
                             </div>
                         </div>
-                        <div class="guessColumn" ng-hide="hardMode">
+                        <div class="guessColumn type" ng-hide="hardMode">
+                            <div class="guessHeader">
+                                Type
+                            </div>
+                            <div class="guess type" ng-repeat="n in [0,1,2,3,4,5]" ng-class="{incorrect: !guesses[n].typeCorrect, correct: guesses[n].typeCorrect, notguessed: guesses[n].state=='not-guessed'}">
+                                <div class="face front"></div>
+                                <div class="face back"></div>
+                            </div>
+                        </div>
+                        <div class="guessColumn subtype" ng-hide="hardMode">
                             <div class="guessHeader">
                                 Subtypes
                             </div>

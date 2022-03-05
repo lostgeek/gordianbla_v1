@@ -104,6 +104,8 @@ angular.module('gordianbla', ['angular.filter'])
                 $scope.updateImage();
             }
 
+            newGuess.typeCorrect = (card.type_code == correctCard.type_code);
+
             if(correctCard.keywords)
                 correctTypes = correctCard.keywords.split(' - ');
             else
