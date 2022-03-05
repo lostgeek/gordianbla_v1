@@ -15,7 +15,7 @@
         <div class='header'>
             Gordian Blade
             <div class='buttons right'>
-                <img class='button' src="img/outline/outline-basketball.svg" ng-click="showCongrats=true" />
+                <img class='button' src="img/outline/outline-share-1.svg" ng-click="showCongrats=true" />
                 <img class='button' src="img/outline/outline-settings.svg" ng-click="settingsButton()" />
             </div>
         </div>
@@ -83,7 +83,49 @@
                 STATS
             </div>
             <div class="view congrats" ng-show="showCongrats">
-                CONGRATS
+                <div class="innerView">
+                    <div class="close">
+                        <img class='button' src="img/outline/outline-cross.svg" ng-click="showCongrats=false" />
+                    </div>
+                    <h1>Statistics</h1>
+                    <div class="statistics">
+                        <div class="stat">
+                            <div class="number">{{stats.played}}</div>
+                            <div class="label">Played</div>
+                        </div>
+                        <div class="stat">
+                            <div class="number">{{stats.wins/stats.played*100 | number:0}}</div>
+                            <div class="label">Win %</div>
+                        </div>
+                        <div class="stat">
+                            <div class="number">{{stats.streak}}</div>
+                            <div class="label">Current streak</div>
+                        </div>
+                        <div class="stat">
+                            <div class="number">{{stats.maxStreak}}</div>
+                            <div class="label">Max streak</div>
+                        </div>
+                    </div>
+                    <div class="distribution">
+                        <div class="bar" ng-repeat="occurance in stats.distribution track by $index" style="width: {{occurance/max(stats.distribution)*100 | number: 2}}%" ng-class="{empty: occurance == 0}">
+                            <span class="index">
+                                {{$index+1}}
+                            </span>
+                            <span class="occurance">
+                                {{occurance}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="bottom" ng-show="finishedPuzzle">
+                        <div class="next">
+                            Next puzzle
+                            <div class="time">{{nextPuzzle}}</div>
+                        </div>
+                        <div class="share" ng-click="copyShare()">
+                            Share <img class="inline-icon" src="img/outline/outline-share-1.svg" />
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="view settings" ng-show="currentView=='settings'">
                 <ul>

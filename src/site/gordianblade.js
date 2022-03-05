@@ -1,10 +1,27 @@
 angular.module('gordianbla', ['angular.filter'])
     .controller('PuzzleController', ['$scope', '$http', '$sce', 'fuzzyByFilter', '$interval', function($scope, $http, $sce, fuzzyByFilter, $interval) {
+        $scope.max = function(a) {return Math.max(...a);};
         $scope.hardMode = false;
-        $scope.lightMode = localStorage.getItem('lightMode') ? localStorage.getItem('lightMode') : false;
-        document.documentElement.setAttribute('data-theme', $scope.lightMode ? 'dark' : 'light');
+        $scope.finishedPuzzle = true;
+
+        $scope.nextPuzzle_int = $interval( function() {
+            now = new Date();
+            nextPuzzle = new Date();
+            nextPuzzle.setUTCDate(nextPuzzle.getUTCDate()+1);
+            nextPuzzle.setUTCHours(0);
+            nextPuzzle.setUTCMinutes(0);
+            nextPuzzle.setUTCSeconds(0);
+            nextPuzzle.setUTCMilliseconds(0);
+            diff = nextPuzzle-now;
+            tmp = Math.floor(diff/(1000*60*60));
+            tmp += ":"+String(Math.floor(diff/(1000*60)%60)).padStart(2, '0');
+            tmp += ":"+String(Math.floor(diff/1000%60)).padStart(2, '0');
+            $scope.nextPuzzle = tmp;
+        }, 1000);
 
         // Light mode {{{
+        $scope.lightMode = localStorage.getItem('lightMode') ? localStorage.getItem('lightMode') : false;
+        document.documentElement.setAttribute('data-theme', $scope.lightMode ? 'dark' : 'light');
         $scope.updateLightMode = function() {
             if ($scope.lightMode) {
                 document.documentElement.setAttribute('data-theme', 'light');
@@ -95,13 +112,21 @@ angular.module('gordianbla', ['angular.filter'])
             if(card.title == correctCard.title) {
                 newGuess.state = 'correct';
                 newGuess.title = 'correct';
-                $scope.selection_int = $interval( function() {$scope.showCongrats = true;}, 1200);
+                $scope.congrats_int = $interval( function() {$scope.showCongrats = true;}, 1200);
+                $scope.addStat(true)
+                $scope.finishedPuzzle = true;
             } else {
                 newGuess.state = 'incorrect';
                 newGuess.title = 'incorrect';
 
-                $scope.elements *= 2;
-                $scope.updateImage();
+                if($scope.currGuess == 5) {
+                    $scope.congrats_int = $interval( function() {$scope.showCongrats = true;}, 1200);
+                    $scope.addStat(false);
+                    $scope.finishedPuzzle = true;
+                } else {
+                    $scope.elements *= 2;
+                    $scope.updateImage();
+                }
             }
 
             newGuess.typeCorrect = (card.type_code == correctCard.type_code);
@@ -175,7 +200,7 @@ angular.module('gordianbla', ['angular.filter'])
         };
 
         $scope.enterGuess = function() {
-            if($scope.guessInput) {
+            if($scope.guessInput && $scope.currGuess < 6) {
                 $scope.updateFuzzy();
                 if($scope.guessInput == $scope.possibleCards[$scope.selectionFuzzy].title) {
                     $scope.guess($scope.possibleCards[$scope.selectionFuzzy]);
@@ -217,6 +242,68 @@ angular.module('gordianbla', ['angular.filter'])
             $scope.selectionFuzzy = i;
             $scope.updateFuzzy();
             $scope.enterGuess();
+        }
+        // }}}
+        // Stats {{{
+        $scope.updateStats = function() {
+            localStorage.setItem('played', $scope.stats.played);
+            localStorage.setItem('wins', $scope.stats.wins);
+            if($scope.stats.lastPlayed)
+                localStorage.setItem('lastPlayed', $scope.stats.lastPlayed.toISOString());
+            else
+                localStorage.setItem('lastPlayed', null);
+            localStorage.setItem('streak', $scope.stats.streak);
+            localStorage.setItem('maxStreak', $scope.stats.maxStreak);
+            localStorage.setItem('distribution', $scope.stats.distribution.join('-'));
+        };
+
+        $scope.addStat = function(win) {
+            $scope.stats.played++;
+            today = new Date();
+            if(win) {
+                $scope.stats.wins++;
+                if($scope.stats.lastPlayed == null || Math.floor((today-$scope.stats.lastPlayed) / (1000*60*60*24)) < 2)
+                    $scope.stats.streak++;
+            } else {
+                $scope.stats.streak = 0;
+            }
+            $scope.stats.lastPlayed = today;
+            if($scope.stats.streak > $scope.stats.maxStreak)
+                $scope.stats.maxStreak = $scope.stats.streak;
+            if(win)
+                $scope.stats.distribution[$scope.currGuess]++;
+            $scope.updateStats();
+        }
+
+        if(localStorage.getItem('played')) {
+            $scope.stats = {'played': localStorage.getItem('played'),
+                            'wins': localStorage.getItem('wins'),
+                            'lastPlayed': localStorage.getItem != null ? new Date(localStorage.getItem('lastPlayed')) : null,
+                            'streak': localStorage.getItem('streak'),
+                            'maxStreak': localStorage.getItem('maxStreak'),
+                            'distribution': localStorage.getItem('distribution').split('-')};
+        } else {
+            $scope.stats = {'played': 0,
+                            'wins': 0,
+                            'lastPlayed': null,
+                            'streak': 0,
+                            'maxStreak': 0,
+                            'distribution': [0, 0, 0, 0, 0, 0]};
+            $scope.updateStats();
+        }
+
+        $scope.copyShare = function() {
+            today = new Date();
+            text = "gordianbla.de "+today.toDateString()+"\nGuesses: "+$scope.currGuess+"/6";
+            for(g of $scope.guesses) {
+                if(g.state != 'not-guessed') {
+                    text += "\n";
+                    if(g.factionCorrect)
+                        text += "🟩"
+                    else
+                        text += "⬜"
+                }
+            }
         }
         // }}}
     }]);
