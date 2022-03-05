@@ -71,7 +71,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class='guessContainer' ng-show="currentView=='puzzle'">
+                    <div class='guessContainer' ng-show="currentView=='puzzle' && !finishedPuzzle">
                         <div class="suggestions" id="suggestions">
                             <div class="suggestion" ng-show="guessInput" ng-repeat="card in possibleCards" ng-class="{selected: $index==selectionFuzzy}" ng-click="selectFuzzy($index)">{{card.title}}</div>
                         </div>

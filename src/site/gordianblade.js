@@ -2,7 +2,7 @@ angular.module('gordianbla', ['angular.filter'])
     .controller('PuzzleController', ['$scope', '$http', '$sce', 'fuzzyByFilter', '$interval', function($scope, $http, $sce, fuzzyByFilter, $interval) {
         $scope.max = function(a) {return Math.max(...a);};
         $scope.hardMode = false;
-        $scope.finishedPuzzle = true;
+        $scope.practiceMode = false;
 
         $scope.nextPuzzle_int = $interval( function() {
             now = new Date();
@@ -53,66 +53,85 @@ angular.module('gordianbla', ['angular.filter'])
         }
         // }}}
         // SVG Puzzle {{{
+        numOfElements = {
+            'combo':            [10, 20, 40, 80, 160, 320, 320],
+            'triangle':         [10, 20, 40, 80, 160, 320, 320],
+            'rect':             [10, 20, 40, 80, 160, 320, 320],
+            'rectangle':        [10, 20, 40, 80, 160, 320, 320],
+            'ellipse':          [10, 20, 40, 80, 160, 320, 320],
+            'circle':           [20, 40, 80, 160, 320, 640, 640],
+            'rotatedrect':      [10, 20, 40, 80, 160, 320, 320],
+            'beziers':          [100, 200, 400, 800, 1600, 3200, 3200], // slight lie... there only are 1500
+            'rotatedellipse':   [10, 20, 40, 80, 160, 320, 320],
+            'polygon':          [10, 20, 40, 80, 160, 320, 320],
+        };
+
         $scope.elements = 10;
-        $scope.minElements = 0;
-        $scope.maxElements = 200;
-
         $scope.svgDOM = null;
-
         $scope.updateImage = function() {
-            var elements = $scope.svgDOM.children[1].children;
-            for(var i = 0; i < elements.length; i++){
-                if(i >= $scope.elements) {
-                    elements[i].style.display = "none";
-                } else {
-                    elements[i].style.display = "unset";
+            $scope.elements = numOfElements[$scope.mode][$scope.currGuess];
+
+            if($scope.svgDOM) {
+                var elements = $scope.svgDOM.children[1].children;
+                for(var i = 0; i < elements.length; i++){
+                    if(i >= $scope.elements) {
+                        elements[i].style.display = "none";
+                    } else {
+                        elements[i].style.display = "unset";
+                    }
                 }
+                $scope.svgImage = $sce.trustAsHtml($scope.svgDOM.outerHTML);
+            } else {
+                $scope.updateInt = $interval(function() {$interval.cancel($scope.updateInt); $scope.updateImage();}, 1000);
             }
-            $scope.svgImage = $sce.trustAsHtml($scope.svgDOM.outerHTML);
         }
 
-        $http({
-            method: 'GET',
-            url: '/fetch_puzzle.php'
-        }).then(function successCallback(response) {
+        $scope.getNewPuzzle = function() {
+            $http({
+                method: 'GET',
+                url: $scope.practiceMode ? '/fetch_puzzle.php' : '/fetch_daily_puzzle.php'
+            }).then(function successCallback(response) {
+                var lines = response.data.split('\n');
+                var parts = lines[1].split(': ');
+                $scope.title = parts.slice(1).join(": ");
+                $scope.mode = lines[2].split(': ', 2)[1].split(' ')[1];
+                $scope.maxElements = lines[3].split(': ', 2)[1];
 
-            var lines = response.data.split('\n');
-            var parts = lines[1].split(': ');
-            $scope.title = parts.slice(1).join(": ");
-            $scope.mode = lines[2].split(': ', 2)[1].split(' ')[1];
-            $scope.maxElements = lines[3].split(': ', 2)[1];
+                parser=new DOMParser();
+                svg = parser.parseFromString(response.data,"text/xml");
+                $scope.svgDOM = svg.children[0];
 
-            parser=new DOMParser();
-            svg = parser.parseFromString(response.data,"text/xml"); 
-            $scope.svgDOM = svg.children[0];
+                var width = $scope.svgDOM.getAttribute('width');
+                var height = $scope.svgDOM.getAttribute('height');
+                if(height) {
+                    $scope.svgDOM.removeAttribute('width');
+                    $scope.svgDOM.removeAttribute('height');
+                    $scope.svgDOM.setAttribute('width', '100%');
+                    $scope.svgDOM.setAttribute('viewBox', '0 0 '+width+' '+height);
+                }
 
-            var width = $scope.svgDOM.getAttribute('width');
-            var height = $scope.svgDOM.getAttribute('height');
-            if(height) {
-                $scope.svgDOM.removeAttribute('width');
-                $scope.svgDOM.removeAttribute('height');
-                $scope.svgDOM.setAttribute('width', '100%');
-                $scope.svgDOM.setAttribute('viewBox', '0 0 '+width+' '+height);
-            }
+                $scope.svgImage = $sce.trustAsHtml($scope.svgDOM.outerHTML);
 
-            $scope.svgImage = $sce.trustAsHtml($scope.svgDOM.outerHTML);
+                $scope.updateImage();
 
-            $scope.updateImage();
-
-        }, function errorCallback(response) {
-            console.log("Error: Fetching failed.");
-        });
+            }, function errorCallback(response) {
+                console.log("Error: Fetching failed.");
+            });
+        };
+        $scope.getNewPuzzle();
         //}}}
         // Guesses Display {{{
         $scope.loadGuesses = function() {
             today = new Date();
             nextPuzzle = $scope.stats.lastPlayed;
-            nextPuzzle.setUTCDate(nextPuzzle.getUTCDate()+1);
-            nextPuzzle.setUTCHours(0);
-            nextPuzzle.setUTCMinutes(0);
-            nextPuzzle.setUTCSeconds(0);
-            nextPuzzle.setUTCMilliseconds(0);
-            if (nextPuzzle - today < 0) { // next puzzle ready
+            if(nextPuzzle) {
+                nextPuzzle.setUTCDate(nextPuzzle.getUTCDate()+1);
+                nextPuzzle.setUTCHours(0);
+                nextPuzzle.setUTCMinutes(0);
+                nextPuzzle.setUTCSeconds(0);
+                nextPuzzle.setUTCMilliseconds(0);
+            }
+            if (!nextPuzzle || nextPuzzle - today < 0) { // next puzzle ready
                 $scope.guesses = [{'state': 'not-guessed'},
                     {'state': 'not-guessed'},
                     {'state': 'not-guessed'},
@@ -134,12 +153,12 @@ angular.module('gordianbla', ['angular.filter'])
             alreadyGuessed = $scope.guesses.filter(function(g){return g.state != 'not-guessed'});
             $scope.currGuess = alreadyGuessed.length;
 
-            console.log("load:", $scope.guesses);
+            $scope.finishedPuzzle = ($scope.guesses.filter(function(g){return g.state == 'correct'}).length > 0) || ($scope.currGuess == 6);
+
         };
 
         $scope.saveGuesses = function() {
             localStorage.setItem('guesses', JSON.stringify($scope.guesses))
-            console.log("save:", $scope.guesses);
         };
 
         $scope.guess = function(card) {
@@ -160,7 +179,6 @@ angular.module('gordianbla', ['angular.filter'])
                     $scope.addStat(false);
                     $scope.finishedPuzzle = true;
                 } else {
-                    $scope.elements *= 2;
                     $scope.updateImage();
                 }
             }
@@ -329,6 +347,8 @@ angular.module('gordianbla', ['angular.filter'])
             $scope.updateStats();
         }
         $scope.loadGuesses();
+        if($scope.finishedPuzzle)
+            $scope.finishedInt = $interval(function() {$scope.showCongrats = true; $interval.cancel($scope.finishedInt);}, 1000);
 
         $scope.copyShare = function() {
             today = new Date();
