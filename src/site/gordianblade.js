@@ -3,6 +3,7 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.max = function(a) {return Math.max(...a);};
         $scope.hardMode = false;
         $scope.practiceMode = false;
+        $scope.showPuzzle = false; // used after finishedPuzzle is set
 
         $scope.nextPuzzle_int = $interval( function() {
             now = new Date();
@@ -66,10 +67,20 @@ angular.module('gordianbla', ['angular.filter'])
             'polygon':          [10, 20, 40, 80, 160, 320, 320],
         };
 
-        $scope.elements = 10;
+        $scope.elements = 0;
         $scope.svgDOM = null;
         $scope.updateImage = function() {
-            $scope.elements = numOfElements[$scope.mode][$scope.currGuess];
+            if($scope.elementsInt)
+                $interval.cancel($scope.elementsInt);
+
+            if(!$scope.finishedPuzzle) {
+                shouldBe = numOfElements[$scope.mode][$scope.currGuess];
+                diff = shouldBe-$scope.elements;
+                if(diff != 0) {
+                    $scope.elements += Math.sign(diff);
+                    $scope.elementsInt = $interval($scope.updateImage, 500/diff);
+                }
+            }
 
             if($scope.svgDOM) {
                 var elements = $scope.svgDOM.children[1].children;

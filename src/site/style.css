@@ -263,18 +263,18 @@ body {
 /* }}} */
 
 /* ImageContainer {{{ */
-.imageContainer {
+.image {
     flex-grow: 1;
     text-align: center;
 }
 
-.imageContainer svg {
+.imageContainer svg, .imageContainer img {
     margin: 0 auto;
     width: auto;
     height: 70vh;
-    border-radius: 2vh;
-
+    border-radius: 2.5vh;
 }
+
 /* }}} */
 
 /* Views {{{ */
