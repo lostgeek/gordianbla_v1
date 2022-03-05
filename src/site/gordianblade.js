@@ -47,7 +47,6 @@ angular.module('gordianbla', ['angular.filter'])
             }
         }
 
-
         $scope.showToast = function(text) {
             $scope.toast = text;
             $scope.toastInt = $interval(function() {$scope.toast = null; $interval.cancel($scope.toastInt)}, 4000);
@@ -76,9 +75,11 @@ angular.module('gordianbla', ['angular.filter'])
             if(!$scope.finishedPuzzle) {
                 shouldBe = numOfElements[$scope.mode][$scope.currGuess];
                 diff = shouldBe-$scope.elements;
-                if(diff != 0) {
+                if(diff > 0) {
                     $scope.elements += Math.sign(diff);
                     $scope.elementsInt = $interval($scope.updateImage, 500/diff);
+                } else {
+                    $scope.elements = shouldBe;
                 }
             }
 
