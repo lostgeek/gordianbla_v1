@@ -20,12 +20,12 @@
             </div>
         </div>
         <div class="content">
-            <div class="puzzleContainer" ng-show="currentView=='puzzle'">
+            <div class="view puzzleContainer" ng-show="currentView=='puzzle'">
                 <div class='imageContainer' ng-show="allCards.length>0" ng-bind-html="svgImage"></div>
                 <div ng-hide="allCards.length>0">Loading cards from NRDB...</div>
                 <div class='guessesOuter'>
                     <div class="guessesDisplay">
-                        <div class="guessColumn faction">
+                        <div class="guessColumn faction" ng-hide="hardMode">
                             <div class="guessHeader">
                                 Faction
                             </div>
@@ -34,7 +34,7 @@
                                 <div class="face back"></div>
                             </div>
                         </div>
-                        <div class="guessColumn">
+                        <div class="guessColumn" ng-hide="hardMode">
                             <div class="guessHeader">
                                 Subtypes
                             </div>
@@ -43,7 +43,7 @@
                                 <div class="face back"></div>
                             </div>
                         </div>
-                        <div class="guessColumn cost">
+                        <div class="guessColumn cost" ng-hide="hardMode">
                             <div class="guessHeader">
                                 (Adv.) Cost
                             </div>
@@ -70,14 +70,17 @@
                     </div>
                 </div>
             </div>
-            <div class="stats" ng-show="currentView=='stats'">
+            <div class="view stats" ng-show="currentView=='stats'">
                 STATS
             </div>
-            <div class="congrats" ng-show="showCongrats">
+            <div class="view congrats" ng-show="showCongrats">
                 CONGRATS
             </div>
-            <div class="settings" ng-show="currentView=='settings'">
-                SETTINGS
+            <div class="view settings" ng-show="currentView=='settings'">
+                <ul>
+                    <li><input id="hardMode" type="checkbox" ng-model="hardMode" ng-change="updateHardMode()"/><label for="hardMode">Hard mode</label></li>
+                    <li><input id="lightMode" type="checkbox" ng-model="lightMode" ng-change="updateLightMode()"/><label for="lightMode">Light mode</label></li>
+                </ul>
             </div>
         </div>
     </body>

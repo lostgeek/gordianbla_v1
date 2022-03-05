@@ -1,5 +1,22 @@
 angular.module('gordianbla', ['angular.filter'])
     .controller('PuzzleController', ['$scope', '$http', '$sce', 'fuzzyByFilter', '$interval', function($scope, $http, $sce, fuzzyByFilter, $interval) {
+        $scope.hardMode = false;
+        $scope.lightMode = localStorage.getItem('lightMode') ? localStorage.getItem('lightMode') : false;
+        document.documentElement.setAttribute('data-theme', $scope.lightMode ? 'dark' : 'light');
+
+        // Light mode {{{
+        $scope.updateLightMode = function() {
+            if ($scope.lightMode) {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        $scope.updateLightMode();
+        // }}}
         // Views {{{
         $scope.showCongrats = false;
 
