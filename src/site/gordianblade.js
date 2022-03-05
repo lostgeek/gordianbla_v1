@@ -110,9 +110,9 @@ angular.module('gordianbla', ['angular.filter'])
                 newGuess.guessedCost = null;
 
             correctCost = -1;
-            if(card.cost)
+            if(correctCard.cost)
                 correctCost = correctCard.cost;
-            else if(card.advancement_cost)
+            else if(correctCard.advancement_cost)
                 correctCost = correctCard.advancement_cost;
             else
                 correctCost = null;
@@ -152,18 +152,18 @@ angular.module('gordianbla', ['angular.filter'])
             tmp = tmp.filter(c => !fullHits.includes(c));
             tmp = fullHits.concat(tmp);
             $scope.possibleCards = tmp;
-            console.log(tmp.map(function(c){return c.title;}).join(", "));
+            $scope.selectionFuzzy = 0;
         };
 
         $scope.enterGuess = function() {
             if($scope.guessInput) {
                 $scope.updateFuzzy();
-                if($scope.guessInput == $scope.possibleCards[0].title) {
-                    $scope.guess($scope.possibleCards[0]);
+                if($scope.guessInput == $scope.possibleCards[$scope.selectionFuzzy].title) {
+                    $scope.guess($scope.possibleCards[$scope.selectionFuzzy]);
                     $scope.guessInput = "";
                     $scope.updateFuzzy();
                 } else {
-                    $scope.guessInput = $scope.possibleCards[0].title;
+                    $scope.guessInput = $scope.possibleCards[$scope.selectionFuzzy].title;
                 }
             }
         };
