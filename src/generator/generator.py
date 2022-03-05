@@ -75,7 +75,7 @@ def main():
 
         with open(f'./puzzles/{solution_id}.svg', 'r+') as infile:
             lines = infile.readlines()
-            lines.insert(0, f'<!--\nTitle: {card["title"]}\nMode: {mode_nr} {mode}\nn: {n}\n-->\n')
+            lines.insert(0, f'<!--\nTitle: {card["title"]}\nNRDB ID: {card["code"]}\nMode: {mode_nr} {mode}\nn: {n}\n-->\n')
             with gzip.open(f'./puzzles/{solution_id}.svg.gz', 'wb') as outfile:
                 outfile.write(bytearray('\n'.join(lines), encoding="utf-8"))
 

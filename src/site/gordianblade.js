@@ -94,8 +94,9 @@ angular.module('gordianbla', ['angular.filter'])
                 var lines = response.data.split('\n');
                 var parts = lines[1].split(': ');
                 $scope.title = parts.slice(1).join(": ");
-                $scope.mode = lines[2].split(': ', 2)[1].split(' ')[1];
-                $scope.maxElements = lines[3].split(': ', 2)[1];
+                $scope.nrdbID = lines[2].split(': ', 2)[1];
+                $scope.mode = lines[3].split(': ', 2)[1].split(' ')[1];
+                $scope.maxElements = lines[4].split(': ', 2)[1];
 
                 parser=new DOMParser();
                 svg = parser.parseFromString(response.data,"text/xml");
@@ -167,7 +168,7 @@ angular.module('gordianbla', ['angular.filter'])
             if(card.title == correctCard.title) {
                 newGuess.state = 'correct';
                 newGuess.title = 'correct';
-                $scope.congrats_int = $interval( function() {$scope.showCongrats = true;}, 1200);
+                $scope.congratsInt = $interval( function() {$interval.cancel($scope.congratsInt); $scope.showCongrats = true;}, 1200);
                 $scope.addStat(true)
                 $scope.finishedPuzzle = true;
             } else {
@@ -175,11 +176,9 @@ angular.module('gordianbla', ['angular.filter'])
                 newGuess.title = 'incorrect';
 
                 if($scope.currGuess == 5) {
-                    $scope.congrats_int = $interval( function() {$scope.showCongrats = true;}, 1200);
+                    $scope.congratsInt = $interval( function() {$interval.cancel($scope.congratsInt); $scope.showCongrats = true;}, 1200);
                     $scope.addStat(false);
                     $scope.finishedPuzzle = true;
-                } else {
-                    $scope.updateImage();
                 }
             }
 
@@ -224,6 +223,7 @@ angular.module('gordianbla', ['angular.filter'])
             $scope.guesses[$scope.currGuess] = newGuess;
             $scope.currGuess++;
             $scope.saveGuesses();
+            $scope.updateImage();
         }
         // }}}
         // NRDB get cards {{{
