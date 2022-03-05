@@ -27,6 +27,7 @@
 }
 
 body {
+    margin: 0;
     font-size: 1rem;
     font-family: 'Roboto', sans-serif;
     background: var(--bg-color);
@@ -34,10 +35,10 @@ body {
 }
 
 .header {
-    margin-top: 1rem;
+    padding: .5rem 0;
+
     font-size: 2rem;
     font-family: 'Patua One', cursive;
-
     text-align: center;
 
     border-bottom: 1px solid var(--border-color);
@@ -45,6 +46,8 @@ body {
 
 .header .buttons .button {
     width: 2rem;
+    position: relative;
+    top: .3ex;
 }
 
 .header .buttons.right {
@@ -265,6 +268,31 @@ body {
     margin-right: 1rem;
 }
 
+@keyframes toast-in {
+    0% {
+        top: 10vh;
+    }
+    100% {
+        top: 8vh;
+    }
+}
+.toast {
+    position: absolute;
+    animation: toast-in 1s cubic-bezier(0.25,1,0.5,1) forwards;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1.5rem;
+    font-family: 'Patua One', cursive;
+    font-size: 1.25rem;
+    font-weight: bold;
+    background: var(--overlay-bg-color);
+    border-radius: 1rem;
+}
+
+/* }}} */
+
+/* Congrats {{{ */
+
 .congrats {
     position: fixed;
     left: 0;
@@ -273,6 +301,9 @@ body {
     bottom: 0;
     margin: 0;
     background: var(--bg-trans-color);
+    display:flex;
+    flex-direction:column;
+    justify-content: center
 }
 
 .congrats .innerView {
@@ -280,7 +311,7 @@ body {
     position: relative;
     width: 25rem;
     padding: 1rem;
-    margin: 10vh auto;
+    margin: 0 auto;
     background: var(--overlay-bg-color);
     border-radius: 2rem;
 }
@@ -325,14 +356,26 @@ body {
     position: relative;
     top: .3ex;
 }
-
 /* }}} */
 
 /* Settings {{{ */
+.settings ul li {
+    margin: 2rem 0;
+}
+
+.settings label {
+    width: max-content;
+}
+
+.settings .explanation {
+    font-size: 0.9rem;
+}
+
+
 .settings [type="checkbox"] {
   position: relative;
   left: 30px;
-  top: 0px;
+  top: 10px;
   z-index: 0;
   -webkit-appearance: none;
 }
@@ -361,6 +404,7 @@ body {
   z-index: 5;
   position: absolute;
   left: 0px;
+  top: 8px;
 }
 
 .settings [type="checkbox"] + label:after {
@@ -373,7 +417,7 @@ body {
   box-shadow: 0px 0px 5px var(--border-color);
   position: absolute;
   left: 2px;
-  top: 2px;
+  top: 10px;
   z-index: 10;
 }
 

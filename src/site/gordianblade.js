@@ -45,6 +45,12 @@ angular.module('gordianbla', ['angular.filter'])
                 $scope.currentView = 'settings';
             }
         }
+
+
+        $scope.showToast = function(text) {
+            $scope.toast = text;
+            $scope.toastInt = $interval(function() {$scope.toast = null; $interval.cancel($scope.toastInt)}, 4000);
+        }
         // }}}
         // SVG Puzzle {{{
         $scope.elements = 10;
@@ -294,16 +300,68 @@ angular.module('gordianbla', ['angular.filter'])
 
         $scope.copyShare = function() {
             today = new Date();
-            text = "gordianbla.de "+today.toDateString()+"\nGuesses: "+$scope.currGuess+"/6";
+            text = "gordianbla.de - "+today.toDateString()+"\n";
+            text += "Guesses: "+$scope.currGuess+"/6\n";
             for(g of $scope.guesses) {
                 if(g.state != 'not-guessed') {
-                    text += "\n";
-                    if(g.factionCorrect)
+                    if(g.factionCorrect) {
                         text += "🟩"
-                    else
-                        text += "⬜"
+                    } else {
+                        if($scope.lightMode)
+                            text += "⬜"
+                        else
+                            text += "⬛"
+                    }
+
+                    if(g.typeCorrect) {
+                        text += "🟩"
+                    } else {
+                        if($scope.lightMode)
+                            text += "⬜"
+                        else
+                            text += "⬛"
+                    }
+
+                    if(g.subtypeTotal == 0) {
+                        if(g.state == 'correct') {
+                            text += "🟩"
+                        } else {
+                            if($scope.lightMode)
+                                text += "⬜"
+                            else
+                                text += "⬛"
+                        }
+                    } else {
+                        if(g.subtypeHits == 0)
+                            text += "0️⃣"
+                        else if(g.subtypeHits == 1)
+                            text += "1️⃣"
+                        else if(g.subtypeHits == 2)
+                            text += "2️⃣"
+                        else if(g.subtypeHits == 3)
+                            text += "3️⃣"
+                        else if(g.subtypeHits == 4)
+                            text += "4️⃣"
+                        else if(g.subtypeHits == 5)
+                            text += "5️⃣"
+                        else
+                            text += "🚫"
+                    }
+
+                    if(g.state == 'correct') {
+                        text += "🟩"
+                    } else {
+                        if($scope.lightMode)
+                            text += "⬜"
+                        else
+                            text += "⬛"
+                    }
+
+                    text += "\n";
                 }
             }
+            navigator.clipboard.writeText(text);
+            $scope.showToast("Text copied to clipboard.");
         }
         // }}}
     }]);

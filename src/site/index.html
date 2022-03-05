@@ -129,9 +129,12 @@
             </div>
             <div class="view settings" ng-show="currentView=='settings'">
                 <ul>
-                    <li><input id="hardMode" type="checkbox" ng-model="hardMode" ng-change="updateHardMode()"/><label for="hardMode">Hard mode</label></li>
-                    <li><input id="lightMode" type="checkbox" ng-model="lightMode" ng-change="updateLightMode()"/><label for="lightMode">Light mode</label></li>
+                    <li><input id="hardMode" type="checkbox" ng-model="hardMode" ng-change="updateHardMode()"/><label for="hardMode">Hard mode<div class="explanation">Hides all information besides the card image</div></label></li>
+                    <li><input id="lightMode" type="checkbox" ng-model="lightMode" ng-change="updateLightMode()"/><label for="lightMode">Light mode<div class="explanation">For when you need a flashlight shining on your face</div></label></li>
                 </ul>
+            </div>
+            <div class="toast" ng-show="toast">
+                {{toast}}
             </div>
         </div>
     </body>
