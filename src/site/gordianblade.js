@@ -134,6 +134,16 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.getNewPuzzle();
         //}}}
         // Guesses Display {{{
+        $scope.clearGuesses = function() {
+            $scope.guesses = [{'state': 'not-guessed'},
+                {'state': 'not-guessed'},
+                {'state': 'not-guessed'},
+                {'state': 'not-guessed'},
+                {'state': 'not-guessed'},
+                {'state': 'not-guessed'}];
+            $scope.currGuess = 0;
+        };
+
         $scope.loadGuesses = function() {
             today = new Date();
             nextPuzzle = $scope.stats.lastPlayed;
@@ -145,22 +155,12 @@ angular.module('gordianbla', ['angular.filter'])
                 nextPuzzle.setUTCMilliseconds(0);
             }
             if (!nextPuzzle || nextPuzzle - today < 0) { // next puzzle ready
-                $scope.guesses = [{'state': 'not-guessed'},
-                    {'state': 'not-guessed'},
-                    {'state': 'not-guessed'},
-                    {'state': 'not-guessed'},
-                    {'state': 'not-guessed'},
-                    {'state': 'not-guessed'}];
+                $scope.clearGuesses();
             } else {
                 if(localStorage.getItem('guesses'))
                     $scope.guesses = JSON.parse(localStorage.getItem('guesses'));
                 else
-                    $scope.guesses = [{'state': 'not-guessed'},
-                        {'state': 'not-guessed'},
-                        {'state': 'not-guessed'},
-                        {'state': 'not-guessed'},
-                        {'state': 'not-guessed'},
-                        {'state': 'not-guessed'}];
+                    $scope.clearGuesses();
             }
 
             alreadyGuessed = $scope.guesses.filter(function(g){return g.state != 'not-guessed'});
@@ -171,7 +171,8 @@ angular.module('gordianbla', ['angular.filter'])
         };
 
         $scope.saveGuesses = function() {
-            localStorage.setItem('guesses', JSON.stringify($scope.guesses))
+            if(!$scope.practiceMode)
+                localStorage.setItem('guesses', JSON.stringify($scope.guesses))
         };
 
         $scope.guess = function(card) {
@@ -230,7 +231,7 @@ angular.module('gordianbla', ['angular.filter'])
 
             newGuess.factionCorrect = (card.faction_code == correctCard.faction_code);
 
-            console.log(card, correctCard);
+            // console.log(card, correctCard);
 
             $scope.guesses[$scope.currGuess] = newGuess;
             $scope.currGuess++;
@@ -325,21 +326,23 @@ angular.module('gordianbla', ['angular.filter'])
         };
 
         $scope.addStat = function(win) {
-            $scope.stats.played++;
-            today = new Date();
-            if(win) {
-                $scope.stats.wins++;
-                if($scope.stats.lastPlayed == null || Math.floor((today-$scope.stats.lastPlayed) / (1000*60*60*24)) < 2)
-                    $scope.stats.streak++;
-            } else {
-                $scope.stats.streak = 0;
+            if(!$scope.practiceMode) {
+                $scope.stats.played++;
+                today = new Date();
+                if(win) {
+                    $scope.stats.wins++;
+                    if($scope.stats.lastPlayed == null || Math.floor((today-$scope.stats.lastPlayed) / (1000*60*60*24)) < 2)
+                        $scope.stats.streak++;
+                } else {
+                    $scope.stats.streak = 0;
+                }
+                $scope.stats.lastPlayed = today;
+                if($scope.stats.streak > $scope.stats.maxStreak)
+                    $scope.stats.maxStreak = $scope.stats.streak;
+                if(win)
+                    $scope.stats.distribution[$scope.currGuess]++;
+                $scope.updateStats();
             }
-            $scope.stats.lastPlayed = today;
-            if($scope.stats.streak > $scope.stats.maxStreak)
-                $scope.stats.maxStreak = $scope.stats.streak;
-            if(win)
-                $scope.stats.distribution[$scope.currGuess]++;
-            $scope.updateStats();
         }
 
         if(localStorage.getItem('played')) {

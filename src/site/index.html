@@ -131,8 +131,11 @@
                             Next puzzle
                             <div class="time">{{nextPuzzle}}</div>
                         </div>
-                        <div class="share" ng-click="copyShare()">
-                            Share <img class="inline-icon" src="img/outline/outline-share-1.svg" />
+                        <div class="buttons">
+                            <div class="practice" ng-click="showCongrats = false; practiceMode = true; finishedPuzzle = false; getNewPuzzle(); clearGuesses();">Continue practicing</div>
+                            <div class="share" ng-click="copyShare()" ng-hide="practiceMode">
+                                Share <img class="inline-icon" src="img/outline/outline-share-1.svg" />
+                            </div>
                         </div>
                     </div>
                 </div>

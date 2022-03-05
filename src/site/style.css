@@ -349,7 +349,7 @@ body {
     justify-content:space-between;
 }
 
-.congrats .bottom .next, .congrats .bottom .share {
+.congrats .bottom .next {
     margin: 2rem;
     font-size:1.5rem;
     text-align:center;
@@ -357,18 +357,47 @@ body {
 
 .congrats .bottom .next {
     text-align:center;
+    flex-grow: 1;
+    flex-shrink: 0;
 }
 
 .congrats .bottom .next .time {
     font-size: 2rem;
 }
 
+.congrats .bottom .buttons {
+    flex-grow: 0;
+    flex-shrink: 1;
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+}
+
+.congrats .bottom .share, .congrats .bottom .practice {
+    display:inline-block;
+    width: 100%;
+}
+
+.congrats .bottom .practice {
+    background: var(--correct-color);
+    color: var(--guess-font-color);
+    font-size:.8rem;
+    text-align: center;
+
+    padding: .5rem;
+    border-radius: .5rem;
+}
+
 .congrats .bottom .share {
     background: var(--correct-color);
     color: var(--guess-font-color);
     text-align: center;
-    margin: auto;
-    padding: 1.5rem;
+    font-size: 1.5rem;
+
+    padding: 1rem;
     border-radius: .5rem;
 }
 .congrats .bottom .share img {
