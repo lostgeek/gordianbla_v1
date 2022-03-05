@@ -104,14 +104,44 @@ angular.module('gordianbla', ['angular.filter'])
         });
         //}}}
         // Guesses Display {{{
-        $scope.guesses = [{'state': 'not-guessed'},
-            {'state': 'not-guessed'},
-            {'state': 'not-guessed'},
-            {'state': 'not-guessed'},
-            {'state': 'not-guessed'},
-            {'state': 'not-guessed'}];
+        $scope.loadGuesses = function() {
+            today = new Date();
+            nextPuzzle = $scope.stats.lastPlayed;
+            nextPuzzle.setUTCDate(nextPuzzle.getUTCDate()+1);
+            nextPuzzle.setUTCHours(0);
+            nextPuzzle.setUTCMinutes(0);
+            nextPuzzle.setUTCSeconds(0);
+            nextPuzzle.setUTCMilliseconds(0);
+            if (nextPuzzle - today < 0) { // next puzzle ready
+                $scope.guesses = [{'state': 'not-guessed'},
+                    {'state': 'not-guessed'},
+                    {'state': 'not-guessed'},
+                    {'state': 'not-guessed'},
+                    {'state': 'not-guessed'},
+                    {'state': 'not-guessed'}];
+            } else {
+                if(localStorage.getItem('guesses'))
+                    $scope.guesses = JSON.parse(localStorage.getItem('guesses'));
+                else
+                    $scope.guesses = [{'state': 'not-guessed'},
+                        {'state': 'not-guessed'},
+                        {'state': 'not-guessed'},
+                        {'state': 'not-guessed'},
+                        {'state': 'not-guessed'},
+                        {'state': 'not-guessed'}];
+            }
 
-        $scope.currGuess = 0;
+            alreadyGuessed = $scope.guesses.filter(function(g){return g.state != 'not-guessed'});
+            $scope.currGuess = alreadyGuessed.length;
+
+            console.log("load:", $scope.guesses);
+        };
+
+        $scope.saveGuesses = function() {
+            localStorage.setItem('guesses', JSON.stringify($scope.guesses))
+            console.log("save:", $scope.guesses);
+        };
+
         $scope.guess = function(card) {
             correctCard = $scope.allCards.filter(function(c){return c.title == $scope.title;})[0];
             newGuess = {'guessedTitle': card.title};
@@ -175,6 +205,7 @@ angular.module('gordianbla', ['angular.filter'])
 
             $scope.guesses[$scope.currGuess] = newGuess;
             $scope.currGuess++;
+            $scope.saveGuesses();
         }
         // }}}
         // NRDB get cards {{{
@@ -297,6 +328,7 @@ angular.module('gordianbla', ['angular.filter'])
                             'distribution': [0, 0, 0, 0, 0, 0]};
             $scope.updateStats();
         }
+        $scope.loadGuesses();
 
         $scope.copyShare = function() {
             today = new Date();
