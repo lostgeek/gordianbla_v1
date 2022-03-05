@@ -4,6 +4,7 @@
     --font-color: #333;
     --guess-font-color: #ccc;
     --bg-color: #fff;
+    --bg-trans-color: rgba(255, 255, 255, 0.7);
     --border-color: #333;
     --highlight-color: #34eaed;
     --font-highlight-color: #000;
@@ -15,6 +16,7 @@
     --font-color: #ccc;
     --guess-font-color: #ccc;
     --bg-color: #29272e;
+    --bg-trans-color: rgba(41, 39, 46, 0.7);
     --border-color: #ccc;
     --highlight-color: #34eaed;
     --font-highlight-color: #fff;
@@ -164,7 +166,7 @@ body {
     background: var(--incorrect-color);
 }
 
-.guess.partial-1-1 .back, .guess.partial-2-2 .back, .guess.partial-3-3 .back, .guess.partial-4-4 .back, .guess.partial-5-5 .back {
+.guess.partial-0-0 .back, .guess.partial-1-1 .back, .guess.partial-2-2 .back, .guess.partial-3-3 .back, .guess.partial-4-4 .back, .guess.partial-5-5 .back {
     background: var(--correct-color);
 }
 
@@ -259,7 +261,8 @@ body {
     top: 0;
     right: 0;
     bottom: 0;
-    background: rgba(var(--bg-color), 0.7);
+    margin: 0;
+    background: var(--bg-trans-color);
 }
 /* }}} */
 
