@@ -57,7 +57,7 @@
                             <div class="guessHeader">
                                 Subtypes
                             </div>
-                            <div class="guess partial-{{guesses[n].subtypeHits}}-{{guesses[n].subtypeTotal}}" ng-repeat="n in [0,1,2,3,4,5]" ng-class="{notguessed: guesses[n].state=='not-guessed'}">
+                            <div class="guess {{guesses[n].partialClass}}" ng-repeat="n in [0,1,2,3,4,5]" ng-class="{notguessed: guesses[n].state=='not-guessed'}">
                                 <div class="face front"></div>
                                 <div class="face back"></div>
                             </div>
@@ -132,7 +132,7 @@
                             <div class="time">{{nextPuzzle}}</div>
                         </div>
                         <div class="buttons">
-                            <div class="practice" ng-click="showCongrats = false; practiceMode = true; finishedPuzzle = false; getNewPuzzle(); clearGuesses();">Continue practicing</div>
+                            <div class="practice" ng-click="showCongrats = false; practiceMode = true; finishedPuzzle = false; elements = 0; showPuzzle = true; stopFinishedAnimation = false; getNewPuzzle(); clearGuesses();">Continue practicing</div>
                             <div class="share" ng-click="copyShare()" ng-hide="practiceMode">
                                 Share <img class="inline-icon" src="img/outline/outline-share-1.svg" />
                             </div>

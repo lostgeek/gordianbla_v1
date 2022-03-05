@@ -3,7 +3,8 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.max = function(a) {return Math.max(...a);};
         $scope.hardMode = false;
         $scope.practiceMode = false;
-        $scope.showPuzzle = false; // used after finishedPuzzle is set
+        $scope.showPuzzle = true; // used after finishedPuzzle is set
+        $scope.stopFinishedAnimation = false;
 
         $scope.nextPuzzle_int = $interval( function() {
             now = new Date();
@@ -83,6 +84,20 @@ angular.module('gordianbla', ['angular.filter'])
                 }
             }
 
+            if($scope.finishedPuzzle) {
+                shouldBe = $scope.maxElements;
+                diff = shouldBe-$scope.elements;
+                if(diff > 0 && !$scope.stopFinishedAnimation) {
+                    $scope.elements += Math.ceil(diff/30);
+                    $scope.elementsInt = $interval($scope.updateImage, Math.min(1000/diff, 10));
+                    if(shouldBe-$scope.elements == 0) {
+                        $scope.showPuzzle = false;
+                        $scope.stopFinishedAnimation = true;
+                        $scope.congratsInt = $interval(function() {$interval.cancel($scope.congratsInt); $scope.showCongrats = true;}, 1000);
+                    }
+                }
+            }
+
             if($scope.svgDOM) {
                 var elements = $scope.svgDOM.children[1].children;
                 for(var i = 0; i < elements.length; i++){
@@ -96,6 +111,10 @@ angular.module('gordianbla', ['angular.filter'])
             } else {
                 $scope.updateInt = $interval(function() {$interval.cancel($scope.updateInt); $scope.updateImage();}, 1000);
             }
+        }
+
+        $scope.startEndingAnimation = function() {
+            $scope.elementsInt = $interval($scope.updateImage, 250/diff);
         }
 
         $scope.getNewPuzzle = function() {
@@ -181,17 +200,17 @@ angular.module('gordianbla', ['angular.filter'])
             if(card.title == correctCard.title) {
                 newGuess.state = 'correct';
                 newGuess.title = 'correct';
-                $scope.congratsInt = $interval( function() {$interval.cancel($scope.congratsInt); $scope.showCongrats = true;}, 1200);
                 $scope.addStat(true)
                 $scope.finishedPuzzle = true;
+                $scope.startEndingAnimation();
             } else {
                 newGuess.state = 'incorrect';
                 newGuess.title = 'incorrect';
 
                 if($scope.currGuess == 5) {
-                    $scope.congratsInt = $interval( function() {$interval.cancel($scope.congratsInt); $scope.showCongrats = true;}, 1200);
                     $scope.addStat(false);
                     $scope.finishedPuzzle = true;
+                    $scope.startEndingAnimation();
                 }
             }
 
@@ -211,6 +230,11 @@ angular.module('gordianbla', ['angular.filter'])
 
             newGuess.subtypeHits = hits.length;
             newGuess.subtypeTotal = correctTypes.length;
+
+            newGuess.partialClass = 'partial-'+newGuess.subtypeHits+'-'+newGuess.subtypeTotal;
+            if(correctTypes.length == 0 && cardTypes.length > 0) {
+                newGuess.partialClass = 'incorrect';
+            }
 
             if(card.cost)
                 newGuess.guessedCost = card.cost;
@@ -362,8 +386,6 @@ angular.module('gordianbla', ['angular.filter'])
             $scope.updateStats();
         }
         $scope.loadGuesses();
-        if($scope.finishedPuzzle)
-            $scope.finishedInt = $interval(function() {$scope.showCongrats = true; $interval.cancel($scope.finishedInt);}, 1000);
 
         $scope.copyShare = function() {
             today = new Date();
