@@ -258,7 +258,7 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.selectionFuzzy = -1;
 
         $scope.updateFuzzy = function() {
-            tmp = fuzzyByFilter($scope.allCards, "title", $scope.guessInput).concat(fuzzyByFilter($scope.allCards, "stripped_title", $scope.guessInput));
+            tmp = fuzzyByFilter($scope.allCards, "stripped_title", $scope.guessInput);
             tmp = makeUniqueByKey(tmp, 'title');
             fullHits = $scope.allCards.filter(function(c){ return c.title.toLowerCase().startsWith($scope.guessInput.toLowerCase()) || c.stripped_title.toLowerCase().startsWith($scope.guessInput.toLowerCase()); });
             tmp = tmp.filter(c => !fullHits.includes(c));
