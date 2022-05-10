@@ -232,7 +232,7 @@ angular.module('gordianbla', ['angular.filter'])
             newGuess.subtypeTotal = correctTypes.length;
 
             newGuess.partialClass = 'partial-'+newGuess.subtypeHits+'-'+newGuess.subtypeTotal;
-            if(correctTypes.length == 0 && cardTypes.length > 0) {
+            if(correctTypes.filter(v => !cardTypes.includes(v)).length == 0 && cardTypes.filter(v => !correctTypes.includes(v)).length > 0) {
                 newGuess.partialClass = 'incorrect';
             }
 
@@ -293,7 +293,6 @@ angular.module('gordianbla', ['angular.filter'])
 
         $scope.enterGuess = function() {
             if($scope.guessInput && $scope.currGuess < 6) {
-                $scope.updateFuzzy();
                 if($scope.guessInput == $scope.possibleCards[$scope.selectionFuzzy].title) {
                     $scope.guess($scope.possibleCards[$scope.selectionFuzzy]);
                     $scope.guessInput = "";
@@ -331,9 +330,13 @@ angular.module('gordianbla', ['angular.filter'])
         }
 
         $scope.selectFuzzy = function(i) {
-            $scope.selectionFuzzy = i;
-            $scope.updateFuzzy();
-            $scope.enterGuess();
+            if($scope.selectionFuzzy == i) {
+                $scope.guessInput = $scope.possibleCards[i].title;
+                $scope.enterGuess();
+            } else {
+                $scope.selectionFuzzy = i;
+                $scope.guessInput = $scope.possibleCards[$scope.selectionFuzzy].title;
+            }
         }
         // }}}
         // Stats {{{

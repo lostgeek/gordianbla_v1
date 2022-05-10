@@ -25,11 +25,11 @@ PARAMETERS = {
         'rotatedellipse': [7, 600],
         'polygon': [8, 600],}
 
-def get_card_image(folder, card):
+def get_card_image(folder, card, scheme):
     if 'image_url' in card.keys():
         url = card['image_url']
     else:
-        url = "https://netrunnerdb.com/card_image/{0}.png".format(card['code'])
+        url = scheme.format(card['code'])
 
     try:
         urllib.request.urlretrieve(url, os.path.join(folder.name, 'solution.png'))
@@ -38,7 +38,7 @@ def get_card_image(folder, card):
             url = "https://netrunnerdb.com/card_image/large/{0}.png".format(card['code'])
             urllib.request.urlretrieve(url, os.path.join(folder.name, 'solution.png'))
         except:
-            url = "https://netrunnerdb.com/card_image/large/{0}.jpg".format(card['code'])
+            url = "https://netrunnerdb.com/card_image/{0}.png".format(card['code'])
             urllib.request.urlretrieve(url, os.path.join(folder.name, 'solution.png'))
 
     return os.path.join(folder.name, 'solution.png')
@@ -49,14 +49,15 @@ def main():
     else:
         N = int(sys.argv[1])
 
+    response = requests.get('http://netrunnerdb.com/api/2.0/public/cards')
+    cards = response.json()['data']
+    scheme = response.json()['imageUrlTemplate'].replace('{code}', '{0}');
     for i in range(N):
-        response = requests.get('http://netrunnerdb.com/api/2.0/public/cards')
-        cards = response.json()['data']
         card = random.choice(cards)
         folder = tempfile.TemporaryDirectory()
 
         try:
-            path = get_card_image(folder, card)
+            path = get_card_image(folder, card, scheme)
         except:
             print(f"Did not find image for {card['title']}")
             continue
