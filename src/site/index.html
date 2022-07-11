@@ -15,6 +15,7 @@
         <div class='header'>
             Gordian Blade
             <div class='buttons right'>
+                <img class='button' src="img/outline/outline-question-circle.svg" ng-click="infoButton()" />
                 <img class='button' src="img/outline/outline-share-1.svg" ng-click="showCongrats=true" />
                 <img class='button' src="img/outline/outline-settings.svg" ng-click="settingsButton()" />
             </div>
@@ -145,6 +146,19 @@
                     <li><input id="hardMode" type="checkbox" ng-model="hardMode" ng-change="updateHardMode()"/><label for="hardMode">Hard mode<div class="explanation">Hides all information besides the card image</div></label></li>
                     <li><input id="lightMode" type="checkbox" ng-model="lightMode" ng-change="updateLightMode()"/><label for="lightMode">Light mode<div class="explanation">For when you need a flashlight shining on your face</div></label></li>
                 </ul>
+            </div>
+            <div class="view infoview" ng-show="currentView=='info'" ng-click="infoButton()">
+                <h1>Rules</h1>
+                <p>Guess the correct card in six guesses or fewer!</p>
+                <p>Each guess must be a valid card title out of the entire card pool of cards printed by both FFG and NISEI. This includes the Terminal Directive campaign cards!</p>
+                <p>The picture on the right approximates the actual card art using a number of shapes. That number will be increased with each guess, making it more and more resemble the original card.</p>
+                <h1>About</h1>
+                <p>This site was created by lostgeek.</p>
+                <p>Find the code over on <a href="https://github.com/lostgeek/gordianbla" target="_blank">github</a>.</p>
+                <p>Image creation done using the <a href="https://github.com/fogleman/primitive" target="_blank">primitive</a> library by fogleman.</p>
+                <p>Icons by <a href="https://dribbble.com/shots/15126704-Freebie-SWM-Icon-Pack" target="_blank">Daniel Wodziczka</a>.</p>
+                <p>The information presented on this site about Android: Netrunner, both literal and graphical, is copyrighted by Fantasy Flight Games and/or Wizards of the Coast or Project NISEI.
+                This website is not produced, endorsed, supported, or affiliated with Fantasy Flight Games and/or Wizards of the Coast.</p>
             </div>
             <div class="toast {{toastType}}" ng-show="toast">
                 <img ng-show="toastType=='error'" class="inline-icon" src="img/outline/outline-warning-round.svg" />

@@ -50,6 +50,14 @@ angular.module('gordianbla', ['angular.filter'])
             }
         }
 
+        $scope.infoButton = function() {
+            if($scope.currentView == 'info') {
+                $scope.currentView = 'puzzle';
+            } else {
+                $scope.currentView = 'info';
+            }
+        }
+
         $scope.showToast = function(text, type, delay=4000) {
             $scope.toast = text;
             $scope.toastType = type;

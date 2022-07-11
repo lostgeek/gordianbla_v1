@@ -40,6 +40,15 @@ body {
     color: var(--font-color);
 }
 
+a {
+    color: #b59ef0;
+    transition: color .4s;
+}
+
+a:hover {
+    color: #f09ebc;
+}
+
 .header {
     padding: .5rem 0;
 
@@ -741,6 +750,21 @@ body {
     background: var(--message-color);
 }
 
+/* }}} */
+
+/* Info {{{ */
+.infoview {
+    margin: 2rem 4rem;
+    font-family: 'Roboto', sans-serif;
+}
+
+.infoview p {
+    max-width: 40rem;
+}
+
+.infoview h1{
+    font-family: 'Patua One', cursive;
+}
 /* }}} */
 
 /* Congrats {{{ */
