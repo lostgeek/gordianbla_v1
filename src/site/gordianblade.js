@@ -146,9 +146,11 @@ angular.module('gordianbla', ['angular.filter'])
                 Array.from(svg.childNodes).forEach(function(el) {
                     if (el.nodeType === svg.COMMENT_NODE) {
                         el.nodeValue.split('\n').forEach(function(line) {
-                            if(line.split(": ").length == 2) {
-                                parts = line.split(": ");
-                                metaData[parts[0]] = parts[1];
+                            parts = line.split(': ');
+                            if(parts.length >= 2) {
+                                key = parts.shift();
+                                value = parts.join(": ");
+                                metaData[key] = value;
                             }
                         });}});
 
@@ -187,6 +189,7 @@ angular.module('gordianbla', ['angular.filter'])
                 } else {
                     $scope.dailyNumber = -1;
                 }
+
                 var width = $scope.svgDOM.getAttribute('width');
                 var height = $scope.svgDOM.getAttribute('height');
                 if(height) {
@@ -238,7 +241,6 @@ angular.module('gordianbla', ['angular.filter'])
             $scope.currGuess = alreadyGuessed.length;
 
             $scope.finishedPuzzle = ($scope.guesses.filter(function(g){return g.state == 'correct'}).length > 0) || ($scope.currGuess == 6);
-
         };
 
         $scope.saveGuesses = function() {
@@ -311,6 +313,8 @@ angular.module('gordianbla', ['angular.filter'])
 
             $scope.guesses[$scope.currGuess] = newGuess;
             $scope.currGuess++;
+            $scope.stats.lastPlayed = $scope.dailyNumber;
+            $scope.updateStats();
             $scope.saveGuesses();
             $scope.updateImage();
         }
