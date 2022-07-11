@@ -223,6 +223,10 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.loadGuesses = function() {
             if ($scope.stats.lastPlayed < $scope.dailyNumber) { // next puzzle ready
                 $scope.clearGuesses();
+                if($scope.dailyNumber != $scope.stats.lastPlayed + 1) {
+                    $scope.stats.streak = 0;
+                    $scope.updateStats();
+                }
             } else {
                 if(localStorage.getItem('guesses'))
                     $scope.guesses = JSON.parse(localStorage.getItem('guesses'));
@@ -417,13 +421,10 @@ angular.module('gordianbla', ['angular.filter'])
                 $scope.stats.played++;
                 if(win) {
                     $scope.stats.wins++;
-
-                    if($scope.dailyNumber == $scope.stats.lastPlayed + 1)
-                        $scope.stats.streak++;
+                    $scope.stats.streak++;
                 } else {
                     $scope.stats.streak = 0;
                 }
-                $scope.stats.lastPlayed = $scope.dailyNumber;
                 if($scope.stats.streak > $scope.stats.maxStreak)
                     $scope.stats.maxStreak = $scope.stats.streak;
                 if(win)
