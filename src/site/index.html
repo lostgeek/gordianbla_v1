@@ -30,7 +30,7 @@
                     <div class="buttons" ng-show="finishedPuzzle">
                         <input type="button" value="Show puzzle" ng-show="!showPuzzle" ng-click="showPuzzle = true" />
                         <input type="button" value="Show solution" ng-show="showPuzzle" ng-click="showPuzzle = false" />
-                        <div class="slider" ng-show="showPuzzle"><input type="range" min="0" max="{{maxElements}}" ng-model="elements" ng-change="updateImage()" />{{elements}}</div>
+                        <div class="slider" ng-show="showPuzzle"><input type="range" min="0" max="{{maxElements}}" ng-model="elements" ng-change="updateSVG()" />{{elements}}</div>
                     </div>
                 </div>
                 <div ng-hide="allCards.length>0">Loading cards from NRDB...</div>

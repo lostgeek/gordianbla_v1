@@ -110,13 +110,20 @@ angular.module('gordianbla', ['angular.filter'])
         }
 
         $scope.updateImage = function() {
+            if($scope.finishedPuzzle)
+                $scope.elements = $scope.maxElements;
+            else
+                $scope.elements = numOfElements[$scope.mode][$scope.currGuess];
+
+            $scope.updateSVG();
+        };
+
+        $scope.updateSVG = function() {
             if(!$scope.imageProcessed)
                 return;
-            shouldBe = numOfElements[$scope.mode][$scope.currGuess];
-            $scope.elements = shouldBe;
             var elements = document.getElementsByClassName('imageContainer')[0].children[0].children[1].children;
             var firstHidden = Array.from(elements).findIndex(function(e) { return e.className.baseVal == "hidden"; });
-            var newElements = Math.min(shouldBe, elements.length) - firstHidden;
+            var newElements = Math.min($scope.elements, elements.length) - firstHidden;
 
             const MAX_ANIMS = 99;
 
@@ -132,7 +139,7 @@ angular.module('gordianbla', ['angular.filter'])
                     elements[i].className.baseVal = "hidden";
                 }
             }
-        };
+        }
 
 
         $scope.getNewPuzzle = function() {
@@ -243,12 +250,27 @@ angular.module('gordianbla', ['angular.filter'])
             $scope.currGuess = alreadyGuessed.length;
 
             $scope.finishedPuzzle = ($scope.guesses.filter(function(g){return g.state == 'correct'}).length > 0) || ($scope.currGuess == 6);
+            if($scope.finishedPuzzle)
+                $scope.endOfPuzzleAnimation();
         };
 
         $scope.saveGuesses = function() {
             if(!$scope.practiceMode)
                 localStorage.setItem('guesses', JSON.stringify($scope.guesses))
         };
+
+        $scope.endOfPuzzleAnimation = function() {
+            $scope.congratsInt = $interval(function() {
+                $interval.cancel($scope.congratsInt);
+                $scope.showPuzzle = false;
+                console.log("showpuzz")
+                $scope.congratsInt = $interval(function() {
+                    $interval.cancel($scope.congratsInt);
+                    $scope.showCongrats = true;
+                    console.log("showcong")
+                }, 800);
+            }, 3000);
+        }
 
         $scope.guess = function(card) {
             correctCard = $scope.allCards.filter(function(c){return c.title == $scope.title;})[0];
@@ -258,6 +280,7 @@ angular.module('gordianbla', ['angular.filter'])
                 newGuess.title = 'correct';
                 $scope.addStat(true)
                 $scope.finishedPuzzle = true;
+                $scope.endOfPuzzleAnimation();
             } else {
                 newGuess.state = 'incorrect';
                 newGuess.title = 'incorrect';
@@ -265,6 +288,7 @@ angular.module('gordianbla', ['angular.filter'])
                 if($scope.currGuess == 5) {
                     $scope.addStat(false);
                     $scope.finishedPuzzle = true;
+                    $scope.endOfPuzzleAnimation();
                 }
             }
 
