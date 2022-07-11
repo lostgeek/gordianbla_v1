@@ -6,7 +6,6 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.hardMode = false;
         $scope.practiceMode = false;
         $scope.showPuzzle = true; // used after finishedPuzzle is set
-        $scope.stopFinishedAnimation = false;
 
         $scope.nextPuzzle_int = $interval( function() {
             now = new Date();
@@ -141,7 +140,6 @@ angular.module('gordianbla', ['angular.filter'])
             }
         }
 
-
         $scope.getNewPuzzle = function() {
             $http({
                 method: 'GET',
@@ -233,25 +231,29 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.clearGuesses();
 
         $scope.loadGuesses = function() {
-            if ($scope.stats.lastPlayed < $scope.dailyNumber) { // next puzzle ready
-                $scope.clearGuesses();
-                if($scope.dailyNumber != $scope.stats.lastPlayed + 1) {
-                    $scope.stats.streak = 0;
-                    $scope.updateStats();
-                }
-            } else {
-                if(localStorage.getItem('guesses'))
-                    $scope.guesses = JSON.parse(localStorage.getItem('guesses'));
-                else
+            if(!$scope.practiceMode) {
+                if ($scope.stats.lastPlayed < $scope.dailyNumber) { // next puzzle ready
                     $scope.clearGuesses();
+                    if($scope.dailyNumber != $scope.stats.lastPlayed + 1) {
+                        $scope.stats.streak = 0;
+                        $scope.updateStats();
+                    }
+                } else {
+                    if(localStorage.getItem('guesses'))
+                        $scope.guesses = JSON.parse(localStorage.getItem('guesses'));
+                    else
+                        $scope.clearGuesses();
+                }
+
+                alreadyGuessed = $scope.guesses.filter(function(g){return g.state != 'not-guessed'});
+                $scope.currGuess = alreadyGuessed.length;
+
+                $scope.finishedPuzzle = ($scope.guesses.filter(function(g){return g.state == 'correct'}).length > 0) || ($scope.currGuess == 6);
+                if($scope.finishedPuzzle)
+                    $scope.endOfPuzzleAnimation();
+            } else {
+                $scope.clearGuesses();
             }
-
-            alreadyGuessed = $scope.guesses.filter(function(g){return g.state != 'not-guessed'});
-            $scope.currGuess = alreadyGuessed.length;
-
-            $scope.finishedPuzzle = ($scope.guesses.filter(function(g){return g.state == 'correct'}).length > 0) || ($scope.currGuess == 6);
-            if($scope.finishedPuzzle)
-                $scope.endOfPuzzleAnimation();
         };
 
         $scope.saveGuesses = function() {
