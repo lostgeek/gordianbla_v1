@@ -183,7 +183,7 @@ angular.module('gordianbla', ['angular.filter'])
                 }
 
                 if(metaData['daily']) {
-                    $scope.dailyNumber = metaData['daily'];
+                    $scope.dailyNumber = parseInt(metaData['daily']);
                 } else {
                     $scope.dailyNumber = -1;
                 }
@@ -332,7 +332,7 @@ angular.module('gordianbla', ['angular.filter'])
             if(correctCard['special_url'])
                 return correctCard['special_url'];
             else
-                sprintf("https://netrunnerdb.com/card_image/large/%s.jpg", $scope.nrdbID);
+                return "https://netrunnerdb.com/card_image/large/" + $scope.nrdbID + ".jpg";
         };
 
         // }}}
@@ -441,8 +441,7 @@ angular.module('gordianbla', ['angular.filter'])
 
             if (date.getFullYear() > 2000) {
                 // This should be fine until 2052 at which point I'm left wondering who is maintaining this site...
-                today = new Date();
-                return Math.floor((today - FIRST_PUZZLE_DATE)/MS_DAY);
+                return Math.floor((date - FIRST_PUZZLE_DATE)/MS_DAY);
             } else {
                 return localStorage.getItem('lastPlayed');
             }
