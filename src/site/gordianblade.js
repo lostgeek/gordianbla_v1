@@ -84,54 +84,48 @@ angular.module('gordianbla', ['angular.filter'])
         };
 
         $scope.elements = 0;
+        $scope.imageProcessed = false;
         $scope.svgDOM = null;
-        $scope.updateImage = function() {
-            if($scope.elementsInt)
-                $interval.cancel($scope.elementsInt);
-
-            if(!$scope.finishedPuzzle) {
-                shouldBe = numOfElements[$scope.mode][$scope.currGuess];
-                diff = shouldBe-$scope.elements;
-                if(diff > 0) {
-                    $scope.elements += Math.min(Math.max(Math.floor(diff/10), 5), diff);
-                    $scope.elementsInt = $interval($scope.updateImage, 100);
-                } else {
-                    $scope.elements = shouldBe;
-                }
-            }
-
-            if($scope.finishedPuzzle) {
-                shouldBe = $scope.maxElements;
-                diff = shouldBe-$scope.elements;
-                if(diff > 0 && !$scope.stopFinishedAnimation) {
-                    $scope.elements += Math.min(Math.max(Math.floor(diff/10), 5), diff);
-                    $scope.elementsInt = $interval($scope.updateImage, 100);
-                    if(shouldBe-$scope.elements == 0) {
-                        $scope.showPuzzle = false;
-                        $scope.stopFinishedAnimation = true;
-                        $scope.congratsInt = $interval(function() {$interval.cancel($scope.congratsInt); if(!$scope.enteredBySysOp){$scope.showCongrats = true;}}, 1000);
-                    }
-                }
-            }
-
+        $scope.initiateImage = function() {
             if($scope.svgDOM) {
                 var elements = $scope.svgDOM.children[1].children;
                 for(var i = 0; i < elements.length; i++){
-                    if(i >= $scope.elements) {
-                        elements[i].style.display = "none";
-                    } else {
-                        elements[i].style.display = "unset";
-                    }
+                    elements[i].className.baseVal = "hidden";
                 }
+
                 $scope.svgImage = $sce.trustAsHtml($scope.svgDOM.outerHTML);
+                $scope.imageProcessed = true;
+                $scope.initiateImageInt = $interval(function() {$interval.cancel($scope.initiateImageInt); $scope.updateImage();}, 200);
             } else {
-                $scope.updateInt = $interval(function() {$interval.cancel($scope.updateInt); $scope.updateImage();}, 1000);
+                $scope.initiateImageInt = $interval(function() {$interval.cancel($scope.initiateImageInt); $scope.initiateImage();}, 1000);
             }
         }
 
-        $scope.startEndingAnimation = function() {
-            $scope.elementsInt = $interval($scope.updateImage, 100);
-        }
+        $scope.updateImage = function() {
+            if(!$scope.imageProcessed)
+                return;
+            shouldBe = numOfElements[$scope.mode][$scope.currGuess];
+            $scope.elements = shouldBe;
+            var elements = document.getElementsByClassName('imageContainer')[0].children[0].children[1].children;
+            var firstHidden = Array.from(elements).findIndex(function(e) { return e.className.baseVal == "hidden"; });
+            var newElements = Math.min(shouldBe, elements.length) - firstHidden;
+
+            const MAX_ANIMS = 99;
+
+            for(var i = 0; i < elements.length; i++){
+                if (i <= $scope.elements) {
+                    if (i < firstHidden) {
+                        elements[i].className.baseVal = "shown";
+                    } else {
+                        partial_anim = Math.min(Math.floor((i-firstHidden)/newElements*(MAX_ANIMS+1)), MAX_ANIMS);
+                        elements[i].className.baseVal = "shown shown-anim-"+partial_anim;
+                    }
+                } else {
+                    elements[i].className.baseVal = "hidden";
+                }
+            }
+        };
+
 
         $scope.getNewPuzzle = function() {
             $http({
@@ -201,7 +195,7 @@ angular.module('gordianbla', ['angular.filter'])
 
                 $scope.svgImage = $sce.trustAsHtml($scope.svgDOM.outerHTML);
 
-                $scope.updateImage();
+                $scope.initiateImage();
                 $scope.loadGuesses();
 
             }, function errorCallback(response) {
@@ -256,7 +250,6 @@ angular.module('gordianbla', ['angular.filter'])
                 newGuess.title = 'correct';
                 $scope.addStat(true)
                 $scope.finishedPuzzle = true;
-                $scope.startEndingAnimation();
             } else {
                 newGuess.state = 'incorrect';
                 newGuess.title = 'incorrect';
@@ -264,7 +257,6 @@ angular.module('gordianbla', ['angular.filter'])
                 if($scope.currGuess == 5) {
                     $scope.addStat(false);
                     $scope.finishedPuzzle = true;
-                    $scope.startEndingAnimation();
                 }
             }
 

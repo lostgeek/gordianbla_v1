@@ -288,6 +288,320 @@ body {
     border-radius: 2.5vh;
 }
 
+.imageContainer svg * {
+    transition: visibility 0s, opacity 0.1s linear;
+}
+
+.imageContainer svg .hidden {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.imageContainer svg .shown {
+    visibility: visible;
+    opacity: 1;
+}
+.imageContainer svg .shown-anim-0 {
+    transition-delay: 0.00s;
+}
+.imageContainer svg .shown-anim-1 {
+    transition-delay: 0.02s;
+}
+.imageContainer svg .shown-anim-2 {
+    transition-delay: 0.04s;
+}
+.imageContainer svg .shown-anim-3 {
+    transition-delay: 0.06s;
+}
+.imageContainer svg .shown-anim-4 {
+    transition-delay: 0.08s;
+}
+.imageContainer svg .shown-anim-5 {
+    transition-delay: 0.10s;
+}
+.imageContainer svg .shown-anim-6 {
+    transition-delay: 0.12s;
+}
+.imageContainer svg .shown-anim-7 {
+    transition-delay: 0.14s;
+}
+.imageContainer svg .shown-anim-8 {
+    transition-delay: 0.16s;
+}
+.imageContainer svg .shown-anim-9 {
+    transition-delay: 0.18s;
+}
+.imageContainer svg .shown-anim-10 {
+    transition-delay: 0.20s;
+}
+.imageContainer svg .shown-anim-11 {
+    transition-delay: 0.22s;
+}
+.imageContainer svg .shown-anim-12 {
+    transition-delay: 0.24s;
+}
+.imageContainer svg .shown-anim-13 {
+    transition-delay: 0.26s;
+}
+.imageContainer svg .shown-anim-14 {
+    transition-delay: 0.28s;
+}
+.imageContainer svg .shown-anim-15 {
+    transition-delay: 0.30s;
+}
+.imageContainer svg .shown-anim-16 {
+    transition-delay: 0.32s;
+}
+.imageContainer svg .shown-anim-17 {
+    transition-delay: 0.34s;
+}
+.imageContainer svg .shown-anim-18 {
+    transition-delay: 0.36s;
+}
+.imageContainer svg .shown-anim-19 {
+    transition-delay: 0.38s;
+}
+.imageContainer svg .shown-anim-20 {
+    transition-delay: 0.40s;
+}
+.imageContainer svg .shown-anim-21 {
+    transition-delay: 0.42s;
+}
+.imageContainer svg .shown-anim-22 {
+    transition-delay: 0.44s;
+}
+.imageContainer svg .shown-anim-23 {
+    transition-delay: 0.46s;
+}
+.imageContainer svg .shown-anim-24 {
+    transition-delay: 0.48s;
+}
+.imageContainer svg .shown-anim-25 {
+    transition-delay: 0.50s;
+}
+.imageContainer svg .shown-anim-26 {
+    transition-delay: 0.52s;
+}
+.imageContainer svg .shown-anim-27 {
+    transition-delay: 0.54s;
+}
+.imageContainer svg .shown-anim-28 {
+    transition-delay: 0.56s;
+}
+.imageContainer svg .shown-anim-29 {
+    transition-delay: 0.58s;
+}
+.imageContainer svg .shown-anim-30 {
+    transition-delay: 0.60s;
+}
+.imageContainer svg .shown-anim-31 {
+    transition-delay: 0.62s;
+}
+.imageContainer svg .shown-anim-32 {
+    transition-delay: 0.64s;
+}
+.imageContainer svg .shown-anim-33 {
+    transition-delay: 0.66s;
+}
+.imageContainer svg .shown-anim-34 {
+    transition-delay: 0.68s;
+}
+.imageContainer svg .shown-anim-35 {
+    transition-delay: 0.70s;
+}
+.imageContainer svg .shown-anim-36 {
+    transition-delay: 0.72s;
+}
+.imageContainer svg .shown-anim-37 {
+    transition-delay: 0.74s;
+}
+.imageContainer svg .shown-anim-38 {
+    transition-delay: 0.76s;
+}
+.imageContainer svg .shown-anim-39 {
+    transition-delay: 0.78s;
+}
+.imageContainer svg .shown-anim-40 {
+    transition-delay: 0.80s;
+}
+.imageContainer svg .shown-anim-41 {
+    transition-delay: 0.82s;
+}
+.imageContainer svg .shown-anim-42 {
+    transition-delay: 0.84s;
+}
+.imageContainer svg .shown-anim-43 {
+    transition-delay: 0.86s;
+}
+.imageContainer svg .shown-anim-44 {
+    transition-delay: 0.88s;
+}
+.imageContainer svg .shown-anim-45 {
+    transition-delay: 0.90s;
+}
+.imageContainer svg .shown-anim-46 {
+    transition-delay: 0.92s;
+}
+.imageContainer svg .shown-anim-47 {
+    transition-delay: 0.94s;
+}
+.imageContainer svg .shown-anim-48 {
+    transition-delay: 0.96s;
+}
+.imageContainer svg .shown-anim-49 {
+    transition-delay: 0.98s;
+}
+.imageContainer svg .shown-anim-50 {
+    transition-delay: 1.00s;
+}
+.imageContainer svg .shown-anim-51 {
+    transition-delay: 1.02s;
+}
+.imageContainer svg .shown-anim-52 {
+    transition-delay: 1.04s;
+}
+.imageContainer svg .shown-anim-53 {
+    transition-delay: 1.06s;
+}
+.imageContainer svg .shown-anim-54 {
+    transition-delay: 1.08s;
+}
+.imageContainer svg .shown-anim-55 {
+    transition-delay: 1.10s;
+}
+.imageContainer svg .shown-anim-56 {
+    transition-delay: 1.12s;
+}
+.imageContainer svg .shown-anim-57 {
+    transition-delay: 1.14s;
+}
+.imageContainer svg .shown-anim-58 {
+    transition-delay: 1.16s;
+}
+.imageContainer svg .shown-anim-59 {
+    transition-delay: 1.18s;
+}
+.imageContainer svg .shown-anim-60 {
+    transition-delay: 1.20s;
+}
+.imageContainer svg .shown-anim-61 {
+    transition-delay: 1.22s;
+}
+.imageContainer svg .shown-anim-62 {
+    transition-delay: 1.24s;
+}
+.imageContainer svg .shown-anim-63 {
+    transition-delay: 1.26s;
+}
+.imageContainer svg .shown-anim-64 {
+    transition-delay: 1.28s;
+}
+.imageContainer svg .shown-anim-65 {
+    transition-delay: 1.30s;
+}
+.imageContainer svg .shown-anim-66 {
+    transition-delay: 1.32s;
+}
+.imageContainer svg .shown-anim-67 {
+    transition-delay: 1.34s;
+}
+.imageContainer svg .shown-anim-68 {
+    transition-delay: 1.36s;
+}
+.imageContainer svg .shown-anim-69 {
+    transition-delay: 1.38s;
+}
+.imageContainer svg .shown-anim-70 {
+    transition-delay: 1.40s;
+}
+.imageContainer svg .shown-anim-71 {
+    transition-delay: 1.42s;
+}
+.imageContainer svg .shown-anim-72 {
+    transition-delay: 1.44s;
+}
+.imageContainer svg .shown-anim-73 {
+    transition-delay: 1.46s;
+}
+.imageContainer svg .shown-anim-74 {
+    transition-delay: 1.48s;
+}
+.imageContainer svg .shown-anim-75 {
+    transition-delay: 1.50s;
+}
+.imageContainer svg .shown-anim-76 {
+    transition-delay: 1.52s;
+}
+.imageContainer svg .shown-anim-77 {
+    transition-delay: 1.54s;
+}
+.imageContainer svg .shown-anim-78 {
+    transition-delay: 1.56s;
+}
+.imageContainer svg .shown-anim-79 {
+    transition-delay: 1.58s;
+}
+.imageContainer svg .shown-anim-80 {
+    transition-delay: 1.60s;
+}
+.imageContainer svg .shown-anim-81 {
+    transition-delay: 1.62s;
+}
+.imageContainer svg .shown-anim-82 {
+    transition-delay: 1.64s;
+}
+.imageContainer svg .shown-anim-83 {
+    transition-delay: 1.66s;
+}
+.imageContainer svg .shown-anim-84 {
+    transition-delay: 1.68s;
+}
+.imageContainer svg .shown-anim-85 {
+    transition-delay: 1.70s;
+}
+.imageContainer svg .shown-anim-86 {
+    transition-delay: 1.72s;
+}
+.imageContainer svg .shown-anim-87 {
+    transition-delay: 1.74s;
+}
+.imageContainer svg .shown-anim-88 {
+    transition-delay: 1.76s;
+}
+.imageContainer svg .shown-anim-89 {
+    transition-delay: 1.78s;
+}
+.imageContainer svg .shown-anim-90 {
+    transition-delay: 1.80s;
+}
+.imageContainer svg .shown-anim-91 {
+    transition-delay: 1.82s;
+}
+.imageContainer svg .shown-anim-92 {
+    transition-delay: 1.84s;
+}
+.imageContainer svg .shown-anim-93 {
+    transition-delay: 1.86s;
+}
+.imageContainer svg .shown-anim-94 {
+    transition-delay: 1.88s;
+}
+.imageContainer svg .shown-anim-95 {
+    transition-delay: 1.90s;
+}
+.imageContainer svg .shown-anim-96 {
+    transition-delay: 1.92s;
+}
+.imageContainer svg .shown-anim-97 {
+    transition-delay: 1.94s;
+}
+.imageContainer svg .shown-anim-98 {
+    transition-delay: 1.96s;
+}
+.imageContainer svg .shown-anim-99 {
+    transition-delay: 1.98s;
+}
+
 /* }}} */
 
 /* Views {{{ */
