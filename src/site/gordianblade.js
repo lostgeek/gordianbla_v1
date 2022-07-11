@@ -1,5 +1,7 @@
 angular.module('gordianbla', ['angular.filter'])
     .controller('PuzzleController', ['$scope', '$http', '$sce', 'fuzzyByFilter', '$interval', function($scope, $http, $sce, fuzzyByFilter, $interval) {
+        const FIRST_PUZZLE_DATE = new Date("2022-03-05");
+        const MS_DAY = 60*60*24*1000;
         $scope.max = function(a) {return Math.max(...a);};
         $scope.hardMode = false;
         $scope.practiceMode = false;
@@ -48,9 +50,23 @@ angular.module('gordianbla', ['angular.filter'])
             }
         }
 
-        $scope.showToast = function(text) {
+        $scope.showToast = function(text, type, delay=4000) {
             $scope.toast = text;
-            $scope.toastInt = $interval(function() {$scope.toast = null; $interval.cancel($scope.toastInt)}, 4000);
+            $scope.toastType = type;
+            if($scope.toastInt)
+                $interval.cancel($scope.toastInt);
+            $scope.toastInt = $interval(function() {$scope.toast = null; $interval.cancel($scope.toastInt)}, delay);
+        }
+
+        $scope.clearDialog = function() {
+            $scope.dialog = null;
+        }
+
+        $scope.showDialog = function(text, type, callback, buttons) {
+            $scope.dialog = text;
+            $scope.dialogType = type;
+            $scope.dialogCallBack = callback;
+            $scope.dialogButtons = buttons;
         }
         // }}}
         // SVG Puzzle {{{
@@ -77,8 +93,8 @@ angular.module('gordianbla', ['angular.filter'])
                 shouldBe = numOfElements[$scope.mode][$scope.currGuess];
                 diff = shouldBe-$scope.elements;
                 if(diff > 0) {
-                    $scope.elements += Math.sign(diff);
-                    $scope.elementsInt = $interval($scope.updateImage, 500/diff);
+                    $scope.elements += Math.min(Math.max(Math.floor(diff/10), 5), diff);
+                    $scope.elementsInt = $interval($scope.updateImage, 100);
                 } else {
                     $scope.elements = shouldBe;
                 }
@@ -88,12 +104,12 @@ angular.module('gordianbla', ['angular.filter'])
                 shouldBe = $scope.maxElements;
                 diff = shouldBe-$scope.elements;
                 if(diff > 0 && !$scope.stopFinishedAnimation) {
-                    $scope.elements += Math.ceil(diff/30);
-                    $scope.elementsInt = $interval($scope.updateImage, Math.min(1000/diff, 10));
+                    $scope.elements += Math.min(Math.max(Math.floor(diff/10), 5), diff);
+                    $scope.elementsInt = $interval($scope.updateImage, 100);
                     if(shouldBe-$scope.elements == 0) {
                         $scope.showPuzzle = false;
                         $scope.stopFinishedAnimation = true;
-                        $scope.congratsInt = $interval(function() {$interval.cancel($scope.congratsInt); $scope.showCongrats = true;}, 1000);
+                        $scope.congratsInt = $interval(function() {$interval.cancel($scope.congratsInt); if(!$scope.enteredBySysOp){$scope.showCongrats = true;}}, 1000);
                     }
                 }
             }
@@ -114,7 +130,7 @@ angular.module('gordianbla', ['angular.filter'])
         }
 
         $scope.startEndingAnimation = function() {
-            $scope.elementsInt = $interval($scope.updateImage, 250/diff);
+            $scope.elementsInt = $interval($scope.updateImage, 100);
         }
 
         $scope.getNewPuzzle = function() {
@@ -122,17 +138,55 @@ angular.module('gordianbla', ['angular.filter'])
                 method: 'GET',
                 url: $scope.practiceMode ? '/fetch_puzzle.php' : '/fetch_daily_puzzle.php'
             }).then(function successCallback(response) {
-                var lines = response.data.split('\n');
-                var parts = lines[1].split(': ');
-                $scope.title = parts.slice(1).join(": ");
-                $scope.nrdbID = lines[2].split(': ', 2)[1];
-                $scope.mode = lines[3].split(': ', 2)[1].split(' ')[1];
-                $scope.maxElements = lines[4].split(': ', 2)[1];
-
                 parser=new DOMParser();
                 svg = parser.parseFromString(response.data,"text/xml");
                 $scope.svgDOM = svg.children[0];
 
+                var metaData = [];
+                Array.from(svg.childNodes).forEach(function(el) {
+                    if (el.nodeType === svg.COMMENT_NODE) {
+                        el.nodeValue.split('\n').forEach(function(line) {
+                            if(line.split(": ").length == 2) {
+                                parts = line.split(": ");
+                                metaData[parts[0]] = parts[1];
+                            }
+                        });}});
+
+                if(metaData['Title']) {
+                    $scope.title = metaData['Title'];
+                } else {
+                    $scope.title = "";
+                }
+
+                if(metaData['NRDB ID']) {
+                    $scope.nrdbID = metaData['NRDB ID'];
+                } else {
+                    $scope.nrdbID = "";
+                }
+
+                if(metaData['Mode']) {
+                    $scope.mode = metaData['Mode'].split(' ')[1];
+                } else {
+                    $scope.mode = "";
+                }
+
+                if(metaData['n']) {
+                    $scope.maxElements = metaData['n'];
+                } else {
+                    $scope.maxElements = 100;
+                }
+
+                if(metaData['additional']) {
+                    $scope.additional = metaData['additional'].split(',');
+                } else {
+                    $scope.additional = [];
+                }
+
+                if(metaData['daily']) {
+                    $scope.dailyNumber = metaData['daily'];
+                } else {
+                    $scope.dailyNumber = -1;
+                }
                 var width = $scope.svgDOM.getAttribute('width');
                 var height = $scope.svgDOM.getAttribute('height');
                 if(height) {
@@ -147,7 +201,8 @@ angular.module('gordianbla', ['angular.filter'])
                 $scope.updateImage();
 
             }, function errorCallback(response) {
-                console.log("Error: Fetching failed.");
+                $scope.showToast("Fetching puzzle failed.", "error");
+                console.log("Error: Fetching puzzle failed.");
             });
         };
         $scope.getNewPuzzle();
@@ -164,16 +219,7 @@ angular.module('gordianbla', ['angular.filter'])
         };
 
         $scope.loadGuesses = function() {
-            today = new Date();
-            nextPuzzle = $scope.stats.lastPlayed;
-            if(nextPuzzle) {
-                nextPuzzle.setUTCDate(nextPuzzle.getUTCDate()+1);
-                nextPuzzle.setUTCHours(0);
-                nextPuzzle.setUTCMinutes(0);
-                nextPuzzle.setUTCSeconds(0);
-                nextPuzzle.setUTCMilliseconds(0);
-            }
-            if (!nextPuzzle || nextPuzzle - today < 0) { // next puzzle ready
+            if ($scope.stats.lastPlayed < $scope.dailyNumber) { // next puzzle ready
                 $scope.clearGuesses();
             } else {
                 if(localStorage.getItem('guesses'))
@@ -275,8 +321,20 @@ angular.module('gordianbla', ['angular.filter'])
             $scope.allCards = response.data.data;
             $scope.allCards = makeUniqueByKey($scope.allCards, 'title');
         }, function errorCallback(response) {
+            $scope.showToast("Error: Fetching NRDB cards failed.", "error");
             console.log("Error: Fetching NRDB cards failed.");
         });
+        $scope.getCardURL = function() {
+            correctCard = $scope.allCards.filter(function(c){return c.title == $scope.title;})[0];
+            if(!correctCard)
+                return "";
+
+            if(correctCard['special_url'])
+                return correctCard['special_url'];
+            else
+                sprintf("https://netrunnerdb.com/card_image/large/%s.jpg", $scope.nrdbID);
+        };
+
         // }}}
         // Fuzzy guesses {{{
         $scope.selectionFuzzy = -1;
@@ -344,7 +402,7 @@ angular.module('gordianbla', ['angular.filter'])
             localStorage.setItem('played', $scope.stats.played);
             localStorage.setItem('wins', $scope.stats.wins);
             if($scope.stats.lastPlayed)
-                localStorage.setItem('lastPlayed', $scope.stats.lastPlayed.toISOString());
+                localStorage.setItem('lastPlayed', $scope.stats.lastPlayed);
             else
                 localStorage.setItem('lastPlayed', null);
             localStorage.setItem('streak', $scope.stats.streak);
@@ -355,15 +413,15 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.addStat = function(win) {
             if(!$scope.practiceMode) {
                 $scope.stats.played++;
-                today = new Date();
                 if(win) {
                     $scope.stats.wins++;
-                    if($scope.stats.lastPlayed == null || Math.floor((today-$scope.stats.lastPlayed) / (1000*60*60*24)) < 2)
+
+                    if($scope.dailyNumber == $scope.stats.lastPlayed + 1)
                         $scope.stats.streak++;
                 } else {
                     $scope.stats.streak = 0;
                 }
-                $scope.stats.lastPlayed = today;
+                $scope.stats.lastPlayed = $scope.dailyNumber;
                 if($scope.stats.streak > $scope.stats.maxStreak)
                     $scope.stats.maxStreak = $scope.stats.streak;
                 if(win)
@@ -372,10 +430,28 @@ angular.module('gordianbla', ['angular.filter'])
             }
         }
 
+        parseLastPlayed = function() {
+            // Old format of lastPlayed was a datetimestamp of solving the last puzzle
+            // New format is simply the puzzle number
+
+            if (localStorage.getItem('lastPlayed') === null)
+                return null;
+
+            date = new Date(localStorage.getItem('lastPlayed'));
+
+            if (date.getFullYear() > 2000) {
+                // This should be fine until 2052 at which point I'm left wondering who is maintaining this site...
+                today = new Date();
+                return Math.floor((today - FIRST_PUZZLE_DATE)/MS_DAY);
+            } else {
+                return localStorage.getItem('lastPlayed');
+            }
+        };
+
         if(localStorage.getItem('played')) {
             $scope.stats = {'played': localStorage.getItem('played'),
                             'wins': localStorage.getItem('wins'),
-                            'lastPlayed': localStorage.getItem != null ? new Date(localStorage.getItem('lastPlayed')) : null,
+                            'lastPlayed': parseLastPlayed(),
                             'streak': localStorage.getItem('streak'),
                             'maxStreak': localStorage.getItem('maxStreak'),
                             'distribution': localStorage.getItem('distribution').split('-')};
@@ -391,8 +467,7 @@ angular.module('gordianbla', ['angular.filter'])
         $scope.loadGuesses();
 
         $scope.copyShare = function() {
-            today = new Date();
-            text = "gordianbla.de - "+today.toDateString()+"\n";
+            text = "gordianbla.de - "+$scope.dailyNumber+"\n";
             text += "Guesses: "+$scope.currGuess+"/6";
             if($scope.hardMode)
                 text += "*";
@@ -458,7 +533,7 @@ angular.module('gordianbla', ['angular.filter'])
                 }
             }
             navigator.clipboard.writeText(text.trim());
-            $scope.showToast("Text copied to clipboard.");
+            $scope.showToast("Text copied to clipboard.", "info");
         }
         // }}}
     }]);
@@ -472,6 +547,3 @@ function makeUniqueByKey(list, key) {
     }
     return Object.values(keys);
 }
-
-
-

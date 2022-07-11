@@ -9,6 +9,8 @@ $today->setTimezone(new DateTimeZone('GMT'));
 $path = "./daily-puzzles/";
 $file = sprintf("%05d.svg.gz", $today->diff($start)->days);
 $data = file_get_contents($path.$file);
+$uncompressed = gzdecode($data);
 
-echo $data;
+$data = sprintf("<!--daily: %05d-->\n", $today->diff($start)->days).$uncompressed;
+echo gzencode($data);
 ?>

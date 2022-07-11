@@ -24,7 +24,7 @@
                 <div class="image">
                     <div class='imageContainer' ng-show="allCards.length>0 && (!finishedPuzzle || showPuzzle)" ng-bind-html="svgImage"></div>
                     <div class='imageContainer' ng-show="finishedPuzzle && !showPuzzle">
-                        <img src="https://netrunnerdb.com/card_image/large/{{nrdbID}}.jpg" />
+                        <img src="{{getCardURL()}}" />
                     </div>
                     <div class="buttons" ng-show="finishedPuzzle">
                         <input type="button" value="Show puzzle" ng-show="!showPuzzle" ng-click="showPuzzle = true" />
@@ -146,8 +146,20 @@
                     <li><input id="lightMode" type="checkbox" ng-model="lightMode" ng-change="updateLightMode()"/><label for="lightMode">Light mode<div class="explanation">For when you need a flashlight shining on your face</div></label></li>
                 </ul>
             </div>
-            <div class="toast" ng-show="toast">
-                {{toast}}
+            <div class="toast {{toastType}}" ng-show="toast">
+                <img ng-show="toastType=='error'" class="inline-icon" src="img/outline/outline-warning-round.svg" />
+                <img ng-show="toastType=='info'" class="inline-icon" src="img/outline/outline-info-round.svg" />
+                <img ng-show="toastType=='message'" class="inline-icon" src="img/outline/outline-message-square-dots.svg" />
+                <div class="message">{{toast}}</div>
+            </div>
+            <div class="dialog {{dialogType}}" ng-show="dialog">
+                <img ng-show="dialogType=='error'" class="inline-icon" src="img/outline/outline-warning-round.svg" />
+                <img ng-show="dialogType=='info'" class="inline-icon" src="img/outline/outline-info-round.svg" />
+                <img ng-show="dialogType=='message'" class="inline-icon" src="img/outline/outline-message-square-dots.svg" />
+                <div class="message">{{dialog}}</div>
+                <div class="buttons">
+                    <div class="button" ng-repeat="button in dialogButtons" ng-click="clearDialog();dialogCallBack(button)">{{button}}</div>
+                </div>
             </div>
         </div>
     </body>
