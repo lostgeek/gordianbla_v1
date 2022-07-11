@@ -199,6 +199,7 @@ angular.module('gordianbla', ['angular.filter'])
                 $scope.svgImage = $sce.trustAsHtml($scope.svgDOM.outerHTML);
 
                 $scope.updateImage();
+                $scope.loadGuesses();
 
             }, function errorCallback(response) {
                 $scope.showToast("Fetching puzzle failed.", "error");
@@ -217,6 +218,7 @@ angular.module('gordianbla', ['angular.filter'])
                 {'state': 'not-guessed'}];
             $scope.currGuess = 0;
         };
+        $scope.clearGuesses();
 
         $scope.loadGuesses = function() {
             if ($scope.stats.lastPlayed < $scope.dailyNumber) { // next puzzle ready
@@ -439,11 +441,11 @@ angular.module('gordianbla', ['angular.filter'])
 
             date = new Date(localStorage.getItem('lastPlayed'));
 
-            if (date.getFullYear() > 2000) {
+            if (date.getFullYear() > 2000) { // old format detected
                 // This should be fine until 2052 at which point I'm left wondering who is maintaining this site...
                 return Math.floor((date - FIRST_PUZZLE_DATE)/MS_DAY);
-            } else {
-                return localStorage.getItem('lastPlayed');
+            } else { // new format
+                return parseInt(localStorage.getItem('lastPlayed'));
             }
         };
 
@@ -463,7 +465,6 @@ angular.module('gordianbla', ['angular.filter'])
                             'distribution': [0, 0, 0, 0, 0, 0]};
             $scope.updateStats();
         }
-        $scope.loadGuesses();
 
         $scope.copyShare = function() {
             text = "gordianbla.de - "+$scope.dailyNumber+"\n";
