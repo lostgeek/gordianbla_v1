@@ -473,9 +473,8 @@ angular.module('gordianbla', ['angular.filter'])
             date = new Date(localStorage.getItem('lastPlayed'));
 
             if (date.getFullYear() > 2000) { // old format detected
-                // This should be fine until 2052 at which point I'm left wondering who is maintaining this site...
                 return Math.floor((date.getTime() - FIRST_PUZZLE_DATE.getTime())/MS_DAY);
-            } else { // new format
+            } else { // new format (number of daily puzzle, parsed as ms after 1/1/1970)
                 return parseInt(localStorage.getItem('lastPlayed'));
             }
         };

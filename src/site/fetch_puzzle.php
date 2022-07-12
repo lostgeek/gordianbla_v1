@@ -1,5 +1,6 @@
 <?php
 header('Content-encoding: gzip');
+header("Cache-Control: no-cache, no-store, must-revalidate");
 
 $path = "./puzzles/";
 $files = array_slice(scandir($path), 2);

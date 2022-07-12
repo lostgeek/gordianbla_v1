@@ -3,13 +3,14 @@
     <head>
         <title>Gordian Blade</title>
         <meta charset="utf-8"/>
+        <meta http-equiv="Cache-Control" content="max-age=300" />
         <script src="angular.min.js"></script>
         <link rel="stylesheet" href="style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto&family=Medula+One&display=swap" rel="stylesheet">
         <script src="angular-filter.min.js"></script>
-        <script src="gordianblade.js"></script>
+        <script src="gordianblade.js?v=<?php echo filemtime('gordianblade.js'); ?>"></script>
     </head>
     <body ng-controller="PuzzleController">
         <div class='header'>
