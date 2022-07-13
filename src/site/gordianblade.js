@@ -269,11 +269,9 @@ angular.module('gordianbla', ['angular.filter'])
             $scope.congratsInt = $interval(function() {
                 $interval.cancel($scope.congratsInt);
                 $scope.showPuzzle = false;
-                console.log("showpuzz")
                 $scope.congratsInt = $interval(function() {
                     $interval.cancel($scope.congratsInt);
                     $scope.showCongrats = true;
-                    console.log("showcong")
                 }, 800);
             }, 3000);
         }
