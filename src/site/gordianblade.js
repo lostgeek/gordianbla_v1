@@ -232,25 +232,29 @@ angular.module('gordianbla', ['angular.filter'])
 
         $scope.loadGuesses = function() {
             if(!$scope.practiceMode) {
-                if ($scope.stats.lastPlayed < $scope.dailyNumber) { // next puzzle ready
+                if ($scope.stats.lastPlayed === null) {
                     $scope.clearGuesses();
-                    if($scope.dailyNumber != $scope.stats.lastPlayed + 1) {
-                        $scope.stats.streak = 0;
-                        $scope.updateStats();
-                    }
                 } else {
-                    if(localStorage.getItem('guesses'))
-                        $scope.guesses = JSON.parse(localStorage.getItem('guesses'));
-                    else
+                    if ($scope.stats.lastPlayed < $scope.dailyNumber) { // next puzzle ready
                         $scope.clearGuesses();
+                        if($scope.dailyNumber != $scope.stats.lastPlayed + 1) {
+                            $scope.stats.streak = 0;
+                            $scope.updateStats();
+                        }
+                    } else {
+                        if(localStorage.getItem('guesses'))
+                            $scope.guesses = JSON.parse(localStorage.getItem('guesses'));
+                        else
+                            $scope.clearGuesses();
+                    }
+
+                    alreadyGuessed = $scope.guesses.filter(function(g){return g.state != 'not-guessed'});
+                    $scope.currGuess = alreadyGuessed.length;
+
+                    $scope.finishedPuzzle = ($scope.guesses.filter(function(g){return g.state == 'correct'}).length > 0) || ($scope.currGuess == 6);
+                    if($scope.finishedPuzzle)
+                        $scope.endOfPuzzleAnimation();
                 }
-
-                alreadyGuessed = $scope.guesses.filter(function(g){return g.state != 'not-guessed'});
-                $scope.currGuess = alreadyGuessed.length;
-
-                $scope.finishedPuzzle = ($scope.guesses.filter(function(g){return g.state == 'correct'}).length > 0) || ($scope.currGuess == 6);
-                if($scope.finishedPuzzle)
-                    $scope.endOfPuzzleAnimation();
             } else {
                 $scope.clearGuesses();
             }
@@ -472,10 +476,14 @@ angular.module('gordianbla', ['angular.filter'])
 
             date = new Date(localStorage.getItem('lastPlayed'));
 
-            if (date.getFullYear() > 2000) { // old format detected
+            if (!isNaN(date)) { // old format detected
                 return Math.floor((date.getTime() - FIRST_PUZZLE_DATE.getTime())/MS_DAY);
             } else { // new format (number of daily puzzle, parsed as ms after 1/1/1970)
-                return parseInt(localStorage.getItem('lastPlayed'));
+                n = parseInt(localStorage.getItem('lastPlayed'));
+                if(isNaN(n))
+                    return null;
+                else
+                    return n;
             }
         };
 
