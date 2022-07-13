@@ -237,7 +237,7 @@ angular.module('gordianbla', ['angular.filter'])
                 } else {
                     if ($scope.stats.lastPlayed < $scope.dailyNumber) { // next puzzle ready
                         $scope.clearGuesses();
-                        if($scope.dailyNumber != $scope.stats.lastPlayed + 1) {
+                        if($scope.dailyNumber != $scope.stats.lastPlayed + 1 && $scope.stats.lastPlayed != 130 && $scope.stats.lastPlayed != 129) {
                             $scope.stats.streak = 0;
                             $scope.updateStats();
                         }
