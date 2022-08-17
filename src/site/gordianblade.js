@@ -474,7 +474,7 @@ angular.module('gordianbla', ['angular.filter'])
 
             date = new Date(localStorage.getItem('lastPlayed'));
 
-            if (!isNaN(date)) { // old format detected
+            if (!isNaN(date) && date.getUTCFullYear > 2020) { // old format detected
                 return Math.floor((date.getTime() - FIRST_PUZZLE_DATE.getTime())/MS_DAY);
             } else { // new format (number of daily puzzle, parsed as ms after 1/1/1970)
                 n = parseInt(localStorage.getItem('lastPlayed'));
