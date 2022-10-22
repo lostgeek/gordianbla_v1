@@ -314,7 +314,8 @@ angular.module('gordianbla', ['angular.filter'])
             newGuess.subtypeTotal = correctTypes.length;
 
             newGuess.partialClass = 'partial-'+newGuess.subtypeHits+'-'+newGuess.subtypeTotal;
-            if(correctTypes.length == 0 && cardTypes.length > 0) {
+            // catch case where guessed card hits all subtypes on the correct card, but has some more and display it as incorrect
+            if(correctTypes.filter(v => !cardTypes.includes(v)).length == 0 && cardTypes.filter(v => !correctTypes.includes(v)).length > 0) {
                 newGuess.partialClass = 'incorrect';
             }
 
