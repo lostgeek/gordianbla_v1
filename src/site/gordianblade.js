@@ -357,6 +357,7 @@ angular.module('gordianbla', ['angular.filter'])
             cache: true,
             url: 'https://netrunnerdb.com/api/2.0/public/cards'
         }).then(function successCallback(response) {
+            $scope.imageUrlTemplate = response.data.imageUrlTemplate;
             $scope.allCards = response.data.data;
             $scope.allCards = makeUniqueByKey($scope.allCards, 'title');
         }, function errorCallback(response) {
@@ -371,7 +372,7 @@ angular.module('gordianbla', ['angular.filter'])
             if(correctCard['special_url'])
                 return correctCard['special_url'];
             else
-                return "https://netrunnerdb.com/card_image/large/" + $scope.nrdbID + ".jpg";
+                return $scope.imageUrlTemplate.replace('{code}', $scope.nrdbID);
         };
 
         // }}}

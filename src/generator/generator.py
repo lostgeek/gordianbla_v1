@@ -32,14 +32,16 @@ def get_card_image(folder, card, scheme):
         url = scheme.format(card['code'])
 
     try:
-        urllib.request.urlretrieve(url, os.path.join(folder.name, 'solution.png'))
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()
+            with open(os.path.join(folder.name, 'solution.png'), 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192): 
+                    # If you have chunk encoded response uncomment if
+                    # and set chunk_size parameter to None.
+                    #if chunk: 
+                    f.write(chunk)
     except:
-        try:
-            url = "https://netrunnerdb.com/card_image/large/{0}.png".format(card['code'])
-            urllib.request.urlretrieve(url, os.path.join(folder.name, 'solution.png'))
-        except:
-            url = "https://netrunnerdb.com/card_image/{0}.png".format(card['code'])
-            urllib.request.urlretrieve(url, os.path.join(folder.name, 'solution.png'))
+        print("Error while getting card: ", url)
 
     return os.path.join(folder.name, 'solution.png')
 
@@ -56,11 +58,7 @@ def main():
         card = random.choice(cards)
         folder = tempfile.TemporaryDirectory()
 
-        try:
-            path = get_card_image(folder, card, scheme)
-        except:
-            print(f"Did not find image for {card['title']}")
-            continue
+        path = get_card_image(folder, card, scheme)
 
         mode = random.choice(list(PARAMETERS.keys()))
         params = PARAMETERS[mode]
