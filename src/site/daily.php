@@ -1,5 +1,5 @@
 <?php
-header('Content-encoding: gzip');
+require_once('create_thumbnail.php');
 
 $start = new DateTime("2022-03-05");
 $start->setTimezone(new DateTimeZone('GMT'));
@@ -12,6 +12,7 @@ $secondsUntilMidnight->setTime(23,59,59);
 $maxage = $today->diff($secondsUntilMidnight)->h*60*60;
 
 header("Cache-Control: public, max-age=".$maxage);
+header('Content-type: image/png');
 
 if(isset($_GET["n"])) {
     $days = $_GET["n"];
@@ -23,10 +24,12 @@ if(isset($_GET["n"])) {
 }
 
 $path = "./daily-puzzles/";
-$file = sprintf("%05d.svg.gz", $days);
-$data = file_get_contents($path.$file);
-$uncompressed = gzdecode($data);
+$png_file = sprintf("thumb/%05d.png", $days);
 
-$data = sprintf("<!--daily: %05d-->\n", $days).$uncompressed;
-echo gzencode($data);
+if(!file_exists($png_file)) {
+    createThumbnail($days);
+}
+
+$data = file_get_contents($path.$png_file);
+echo($data);
 ?>

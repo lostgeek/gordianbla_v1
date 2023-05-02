@@ -16,6 +16,7 @@
         <div class='header'>
             Gordian Blade
             <div class='buttons right'>
+                <a href="daily_rss.php"><img class='button' src="img/outline/outline-rss.svg"/></a>
                 <img class='button' src="img/outline/outline-question-circle.svg" ng-click="infoButton()" />
                 <img class='button' src="img/outline/outline-share-1.svg" ng-click="showCongrats=true" />
                 <img class='button' src="img/outline/outline-settings.svg" ng-click="settingsButton()" />
