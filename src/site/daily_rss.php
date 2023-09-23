@@ -22,7 +22,7 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
 
     <channel>
         <title>Gordianbla.de Daily Puzzle</title>
-        <link>https://www.gordianbla.de</link>
+        <link>https://gordianbla.de</link>
         <description>Daily Netrunner card puzzle</description>
         <language>en</language>
         <lastBuildDate><?php echo($today->format("r"));?></lastBuildDate>
@@ -32,7 +32,7 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
             for ($i=$days; $i>=$days-30; $i--) {
                 echo("<item>");
                 echo("<title>Daily Puzzle #".$i."</title>");
-                echo("<link>https://www.gordianbla.de</link>");
+                echo("<link>https://gordianbla.de</link>");
                 echo("<description>Today's daily puzzle. Give it a try over on https://gordianbla.de !</description>");
                 echo("<pubDate>".(clone $start)->modify("+".$i." day")->format("r")."</pubDate>");
 
