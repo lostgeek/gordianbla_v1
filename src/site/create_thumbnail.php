@@ -23,7 +23,7 @@ function createThumbnail($i) {
     $svg = simplexml_load_string($uncompressed);
     $elements = $svg->children()[1]->children();
     // Traverse backwards through tree to avoid skipping elements
-    for($i = count($elements); $i >= $level1elements; $i--) {
+    for($i = count($elements); $i > $level1elements; $i--) {
         unset($elements[$i]);
     }
 
